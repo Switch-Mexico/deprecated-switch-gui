@@ -1,0 +1,16 @@
+{
+  "root": ".",
+  "devServer": {
+    "host": "localhost",
+    "hotMiddleware": {
+      "reload": true
+    }
+  },
+  "externals": {
+    "react": "React",
+    "react-dom": "ReactDOM"
+  },
+  "postcss": [
+    ["autoprefixer", { "browsers": ["last 2 versions", "> 1%", "ie 9"]}]
+  ]
+}
