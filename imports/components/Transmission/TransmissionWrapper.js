@@ -227,7 +227,7 @@ export default class TransmissionWrapper extends React.Component {
                         <Row>
                           <Col xs={12}  style={{padding: 25}}>
                             <div style={{height: 780}}>
-                              <DataTable/>
+                              <DataTable transmission={data}/>
                             </div>
                           </Col>
                         </Row>
