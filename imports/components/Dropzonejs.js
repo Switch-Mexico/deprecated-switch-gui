@@ -55,6 +55,19 @@ export default class Dropzonejs extends React.Component {
 
           break;
 
+          case 'load_zones.tab':
+          reader.onload = function(){
+
+            let data = reader.result;
+            data = d3.tsv.parse(data);
+            Meteor.call('file.remove.loadZones');
+            Meteor.call('file.add.loadZones',data);
+
+
+          };
+
+          break;
+
 
 
           default: console.log("lol")

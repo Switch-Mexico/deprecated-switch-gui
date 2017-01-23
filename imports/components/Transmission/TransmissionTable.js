@@ -29,15 +29,10 @@ class DatatableComponent extends React.Component {
       .find('nowrap')
       .dataTable({
         responsive: true,
-        data:[{ "Year": "2012", "Month": "January", "Savings": "$100" },
-              { "Year": "2012", "Month": "February", "Savings": "$80" }],
+        pagination: true,
         columnDefs: [
           { targets: [-1, -3], className: 'dt-body-right' }
-        ],
-        columns:[
-          {data: 'Year'},
-          {data: "Month"},
-          {data: "Savings"}]
+        ]
 
       });
   }
@@ -64,15 +59,15 @@ class DatatableComponent extends React.Component {
   }
 
   componentWillUnmount(){
-    console.log("componentWillUnmount")
+
        $(ReactDOM.findDOMNode(this.example))
        .dataTable()
        .fnDestroy(true);
     }
 
   componentDidMount() {
-    console.log("componentWillMount")
-    this.reloadTableData(['1','2','3','4','5']);
+
+    this.reloadTableData();
 
   }
 
@@ -89,7 +84,7 @@ class DatatableComponent extends React.Component {
     console.log(rowx)
 
     const table = $(ReactDOM.findDOMNode(this.example))
-                  .DataTable()
+                  .DataTable({"pageLength": 13})
                   .rows.add(rowx).draw();
   }
 
@@ -103,18 +98,18 @@ class DatatableComponent extends React.Component {
       <Table ref={(c) => this.example = c} className='display' cellSpacing='0' width='100%'>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>From Load Zone 1 </th>
-            <th>To Load Zone 2 </th>
+            <th></th>
+            <th>From Load Zone</th>
+            <th>To Load Zone</th>
             <th>Period</th>
             <th>Transmission [ MW ]</th>
           </tr>
         </thead>
         <tfoot>
           <tr>
-            <th>ID</th>
-            <th>From Load Zone 1 </th>
-            <th>To Load Zone 2 </th>
+            <th></th>
+            <th>From Load Zone</th>
+            <th>To Load Zone</th>
             <th>Period</th>
             <th>Transmission [ MW ]</th>
           </tr>
@@ -131,7 +126,7 @@ export default class Datatablesjs extends React.Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount(){console.log(this.props.transmission)}
+
   render() {
     return (
       <Row>

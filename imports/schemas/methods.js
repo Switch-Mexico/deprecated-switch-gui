@@ -1,5 +1,6 @@
 import { Conections } from '../schemas';
 import { Scenarios } from '../schemas';
+import { LoadZones } from '../schemas';
 
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
@@ -37,7 +38,7 @@ Meteor.methods({
      },
 
      "file.add.scenarios": function(dataArray) {
-       
+
        dataArray.map((data)=>{
 
          Scenarios.insert(data);
@@ -45,6 +46,22 @@ Meteor.methods({
 
        });
       },
+
+      "file.remove.loadZones": function(dataArray) {
+
+        LoadZones.remove({});
+
+       },
+
+       "file.add.loadZones": function(dataArray) {
+
+         dataArray.map((data)=>{
+
+           LoadZones.insert(data);
+
+
+         });
+        },
 
 
 

@@ -30,12 +30,17 @@ class ApplicationSidebar extends React.Component {
                     <SidebarNavItem glyph='icon-fontello-gauge' name='Upload' href='/Uploads' />
                     <SidebarNavItem glyph='icon-fontello-chart-area' name='Outputs'>
                       <SidebarNav>
-                        <SidebarNavItem glyph='chart-pie-2' name='Capacity Evolution' href='/home3' />
-                          <SidebarNavItem glyph='chart-pie-2' name='Build Project' href='/BuildProject' />
-                        <SidebarNavItem glyph='chart-pie-2' name='Load Balance' href='/LoadBalance' />
+                        <SidebarNavItem glyph='icon-fontello-cluster' name='Transmission Lines' href='/outputs/Transmission' />
+                        <SidebarNavItem glyph='chart-pie-2' name='Capacity Evolution' href='/outputs/home3' />
+                        <SidebarNavItem glyph='chart-pie-2' name='Build Project' href='/outputs/BuildProject' />
+                        <SidebarNavItem glyph='chart-pie-2' name='Load Balance' href='/outputs/LoadBalance' />
                       </SidebarNav>
                     </SidebarNavItem>
-                  <SidebarNavItem glyph='icon-fontello-cluster' name='Transmission Lines' href='/Transmission' />
+                    <SidebarNavItem glyph='icon-fontello-chart-area' name='Inputs'>
+                      <SidebarNav>
+                        <SidebarNavItem glyph='chart-pie-2' name='Load Zones' href='/inputs/load-zones' />
+                      </SidebarNav>
+                    </SidebarNavItem>
                 </SidebarNav>
               </div>
             </Col>

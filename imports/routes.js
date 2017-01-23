@@ -17,6 +17,7 @@ import Transmission from './routes/Transmission';
 import LoadBalance from './routes/LoadBalance';
 import BuildProject from './routes/BuildProject';
 import Uploads from './routes/Uploads';
+import LoadZones from './routes/LoadZones';
 
 import HomePage from './routes/HomePage';
 import Lock from './routes/Uploads';
@@ -67,18 +68,21 @@ const routes = (
   <Route path='/Dashboard' component={App}>
     <IndexRoute component={Home} />
     <Route path='/home2' component={Home} />
-    <Route path='/home3' component={CloseUp} />
-    <Route path='/Transmission' component={Transmission} />
     <Route path='/Uploads' component={Uploads} />
-    <Route path='/BuildProject' component={BuildProject} />
-    <Route path='/LoadBalance' component={LoadBalance} />
+
+    <Route path='/outputs/home3' component={CloseUp} />
+    <Route path='/outputs/Transmission' component={Transmission} />
+    <Route path='/outputs/BuildProject' component={BuildProject} />
+    <Route path='/outputs/LoadBalance' component={LoadBalance} />
+
+    <Route path='/inputs/load-zones' component={LoadZones} />
   </Route>
 );
 
 /**
  * No Sidebar, Header or Footer. Only the Body is rendered.
  */
- 
+
 const basicRoutes = (
   <Route>
     <Route path='lock' component={Lock} />

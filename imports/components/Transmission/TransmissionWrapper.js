@@ -19,9 +19,9 @@ import {
 import points from '../../nodes/Points/points';
 import coordinates from '../../nodes/Points/coordinates';
 
-import TransmissionTableRows from './TransmissionTableRows'
+import TransmissionTable from './TransmissionTable'
 import TransmissionLabel from './TransmissionLabel'
-import DataTable from './DataTable'
+
 export default class TransmissionWrapper extends React.Component {
 
   constructor(props) {
@@ -227,7 +227,7 @@ export default class TransmissionWrapper extends React.Component {
                         <Row>
                           <Col xs={12}  style={{padding: 25}}>
                             <div style={{height: 780}}>
-                              <DataTable transmission={data}/>
+                              <TransmissionTable transmission={data}/>
                             </div>
                           </Col>
                         </Row>
