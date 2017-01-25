@@ -21,15 +21,27 @@
 
 ### Installation of Node.js & npm & Meteor
 
+## Debian
+
 ```Shell
 sudo apt-get install nodejs nodejs-legacy npm
 curl https://install.meteor.com/ | sh
 ```
+##  OS X
+
+```Shell
+brew install node
+curl https://install.meteor.com/ | sh
+```
+## Windows
+
+https://nodejs.org/es/download/
+https://www.meteor.com/install
 
 ### Install and run Switch
 
 ```Shell
-git clone https://github.com/switch/Switch.git
+git clone https://github.com/Switch-Mexico/Switch
 cd Switch/
 meteor npm install
 meteor

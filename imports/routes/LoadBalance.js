@@ -35,25 +35,25 @@ class MainChart extends React.Component {
       width: '100%',
       height: 300,
       title: 'Chart of Total ',
-      titleColor: '#2EB398',
+      titleColor: '#0067c8',
       subtitle: 'Period: 2004 and 2008',
-      subtitleColor: '#2EB398',
+      subtitleColor: '#0067c8',
       axis: {
         x: {
           type: 'datetime',
           tickCount: 3,
           label: 'Time',
-          labelColor: '#2EB398'
+          labelColor: '#0067c8'
         },
         y: {
           type: 'linear',
           tickFormat: 'd',
           tickCount: 2,
-          labelColor: '#2EB398'
+          labelColor: '#0067c8'
         }
       },
       tooltip: {
-        color: '#55C9A6',
+        color: 'white',
         format: {
           y: '.0f',
           x: '%x'
@@ -70,7 +70,7 @@ class MainChart extends React.Component {
 
     var total_users = chart.area_series({
       name: 'Total ',
-      color: '#2EB398',
+      color: '#0067c8',
       marker: 'circle',
       fillopacity: 0.7,
       noshadow: true

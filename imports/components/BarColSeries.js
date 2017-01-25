@@ -37,7 +37,7 @@ export default class BarColSeries extends React.Component {
             }
           },
           tooltip: {
-            color: color[1],
+            color: 'white',
             format: {
               y: '.0f'
             }

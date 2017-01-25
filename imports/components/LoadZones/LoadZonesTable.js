@@ -80,16 +80,13 @@ class DatatableComponent extends React.Component {
 
     let data = this.props.loadZones;
 
-    console.log(data)
     let rowx = data.map((row , index)=>{
 
       return this.writeRow(row, index);
 
     });
-    console.log(rowx)
-
     const table = $(ReactDOM.findDOMNode(this.example))
-                  .DataTable({"pageLength": 10})
+                  .DataTable({"pageLength": 11})
                   .rows.add(rowx).draw();
   }
 
@@ -137,7 +134,7 @@ export default class Datatablesjs extends React.Component {
   render() {
     return (
       <Row>
-        <Col xs={12} style={{padding:25}}>
+        <Col xs={12} style={{padding:25,paddingBottom:0}}>
           <DatatableComponent loadZones={this.props.loadZones} />
           <br/>
         </Col>

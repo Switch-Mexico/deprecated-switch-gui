@@ -7,6 +7,7 @@ import {
 } from '@sketchpixy/rubix';
 
 import { LoadZones } from '../schemas';
+import { ProjectInfo } from '../schemas';
 
 import LoadZonesWrapper from '../components/LoadZones/LoadZonesWrapper'
 
@@ -20,29 +21,39 @@ class LoadZonesComponent extends React.Component {
 
 
 
-    if (!this.props.points){
+    if (!this.props.points && !this.props.info){
       return(<div>Loading...</div>);
     }
 
-    console.log(this.props.points)
-
-
+    let loadzones = []; //creates a list of all load zone that will be listed
     let data = this.props.points.map((point,key)=>{
-      if(point['LOAD_ZONE'] != "") {return(point);}
+      if(point['LOAD_ZONE'] != "") {
+        loadzones.push(point['LOAD_ZONE']);
+        return(point);}
           });
-    console.log(data)
+
     data = data.filter(function(row) {
         return row != undefined;
     });
 
+    let info = this.props.info.map((inf,key)=>{
+      return(inf);
+          });
+
+    info = this.props.info.map((row,key)=>{
+
+      if(loadzones.includes(row['proj_load_zone'] )) {return(row);}
+          });
+
+    info = info.filter(function(row) {
+        return row != undefined;
+    });
+
+
     return (
       <div className='dashboard'>
         <Row>
-          <Col sm={12}>
-          </Col>
-        </Row>
-        <Row>
-          <LoadZonesWrapper loadZones={data}/>
+          <LoadZonesWrapper loadZones={data} info={info}/>
         </Row>
       </div>
     );
@@ -51,16 +62,19 @@ class LoadZonesComponent extends React.Component {
 
 function composer(props, onData) {
 
-  const subscription = Meteor.subscribe("loadZones.data");
-  if (subscription.ready()) {
-    console.log("done");
+  const subscriptionLz = Meteor.subscribe("loadZones.data");
+  const subscriptionPi = Meteor.subscribe("projectInfo.data");
+
+  if (subscriptionPi.ready() && subscriptionLz.ready() ) {
+
     const data =  {
       points: LoadZones.find({}),
+      info: ProjectInfo.find({}),
       ready: true,
     };
     onData(null, data);
   } else {
-    onData(null, {ready: false, points:false});
+    onData(null, {ready: false, points:false, info:false});
   }
 }
 export default composeWithTracker(composer)(LoadZonesComponent);

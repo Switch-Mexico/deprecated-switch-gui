@@ -616,7 +616,7 @@
 		azure: "#f0ffff",
 		beige: "#f5f5dc",
 		black: "#000000",
-		blue: "#0000ff",
+		blue: "#0074cf",
 		brown: "#a52a2a",
 		cyan: "#00ffff",
 		darkblue: "#00008b",

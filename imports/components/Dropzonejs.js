@@ -68,6 +68,19 @@ export default class Dropzonejs extends React.Component {
 
           break;
 
+          case 'project_info.tab':
+          reader.onload = function(){
+
+            let data = reader.result;
+            data = d3.tsv.parse(data);
+            Meteor.call('file.remove.projectInfo');
+            Meteor.call('file.add.projectInfo',data);
+
+
+          };
+
+          break;
+
 
 
           default: console.log("lol")

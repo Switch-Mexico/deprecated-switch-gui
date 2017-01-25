@@ -21,6 +21,7 @@ import coordinates from '../../nodes/Points/coordinates';
 
 import LoadZonesTable from './LoadZonesTable'
 import LoadZonesLabel from './LoadZonesLabel'
+import LoadZoneGraph from './LoadZoneGraph'
 
 
 
@@ -29,6 +30,7 @@ export default class LoadZonesWrapper extends React.Component {
   constructor(props) {
 
     super(props);
+    this.handleClick = this.handleClick.bind(this);
     this.showMap = this.showMap.bind(this);
 
     this.state = { /// declare initial state
@@ -36,7 +38,9 @@ export default class LoadZonesWrapper extends React.Component {
       data:0,
       nodexe:0,
       maps:0,
-      period:0
+      period:0,
+      load_zone:false,
+      load_zone_id: '01'
 
     };
   }
@@ -49,6 +53,25 @@ export default class LoadZonesWrapper extends React.Component {
     return id;
 
   }
+
+  handleClick(id){
+
+    console.log("nischt",id)
+
+    let info = this.props.info.map((row,key)=>{
+
+      if(row['proj_load_zone'].substring(0,2) == id) {return(row);}
+
+          });
+    info = info.filter(function(row) {
+      return row != undefined;
+    });
+
+    this.setState({load_zone:info,load_zone_id:id});
+
+  }
+
+
   showMap(){ ///draw the new transmission lines
 
     let a = this;
@@ -59,28 +82,35 @@ export default class LoadZonesWrapper extends React.Component {
       return this.getIDs(row, index);
 
     });
-    console.log(IDs);
+
+
+    let nodex = [];
 
     L.geoJson(points,{ // draw all the points from file imports> nodes > Points > points.json
+
       onEachFeature:function (feature, layer) { // iterate over all the features from points.json files
         let id = feature.properties.ID.toString();
-        console.log(id,typeof(id));
+
 
       if (IDs.includes(id)){
         let latlng = feature.geometry.coordinates;
-        L.circle([latlng[1],latlng[0]], {
-          color: '#ff4949', //set the points color opacity and radius
-          fillColor: '#ff4949',
-          fillOpacity: .3,
-          opacity:.3,
-          radius: 25000
-        }).addTo(a.state.maps);
-
+        nodex.push(
+          L.circle([latlng[1],latlng[0]], {
+            color: '#ff4949', //set the points color opacity and radius
+            fillColor: '#ff4949',
+            fillOpacity: .3,
+            opacity:.3,
+            radius: 25000
+          }).on('click', () => a.handleClick(id)).addTo(a.state.maps)
+        );
 
       }
 
       }});
+
     }
+
+
 
   componentDidMount(){
 
@@ -97,61 +127,68 @@ export default class LoadZonesWrapper extends React.Component {
         minZoom: 5,
       }).addTo(this.state.maps);
 
-    var color = [ "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00"];
-
     this.showMap();
+    console.log(this.props.load_zone)
+    this.handleClick('01');
+
 
   }
 
-
-
-
-
-
-
   render() {
 
-    if (!this.props.loadZones){
+    if (!this.props.loadZones && !this.state.load_zone){
       return(<div>Loading...</div>);
     }
 
 
     return (
-          <Col sm={12}>
-            <Col sm={5} style={{padding: 0 }}>
-
-              <Col sm={12} style={{padding: 0 }}>
-                <PanelContainer collapseBottom>
-                  <Panel>
-                    <PanelBody style={{padding: 0 }}>
-                      <Grid>
-                        <Row>
-                          <Col xs={12}  style={{padding: 25}}>
-                            <div style={{height: 780}}>
-                              <LoadZonesTable loadZones={this.props.loadZones}/>
-                            </div>
-                          </Col>
-                        </Row>
-                      </Grid>
-                    </PanelBody>
-                  </Panel>
-                </PanelContainer>
-              </Col>
-            </Col>
-            <Col sm={7}>
+          <Col sm={12} style={{padding: 20, paddingTop:0, paddingBottom:0}}>
+            <Col xs={12} sm={7} sm={7} style={{padding: 0}}>
               <Row>
-                <Col sm={12} collapseRight>
+                <Col sm={12} xs={12} md={12} collapseBottom >
+                  <PanelContainer>
+                    <Panel>
+                      <PanelHeader>
+                        <div style={{padding: 25, paddingBottom:0}}>
+                          <div ref="map" style={{height: 445}}>
+                          </div>
+                          <div className='fg-black50 text-center' style={{borderBottom: '1px solid #ccc'}}>
+                            <h5 style={{padding: 12.5, margin: 0, paddingBottom:0, marginBottom: 3}}>Scenario</h5>
+                          </div>
+                        </div>
+                      </PanelHeader>
+                    </Panel>
+                  </PanelContainer>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={12} xs={12} md={12} collapseBottom >
+                <PanelContainer style={{marginBottom: 0}}>
+                  <Panel>
+                    <PanelHeader>
+                      <Col sm={12} xs={12} md={12}  style={{paddingTop: 25, paddingBottom:0}}>
+                        <div style={{height: 300}}>
+                          <LoadZoneGraph data={this.state.load_zone} id={this.state.load_zone_id}/>
+                          </div>
+                        </Col>
+                      </PanelHeader>
+                    </Panel>
+                  </PanelContainer>
+                </Col>
+              </Row>
+            </Col>
+            <Col xs={12} xs={12} sm={5} style={{paddingLeft: 25, paddingRight:25}} >
+              <Row>
+                <Col xs={12} sm={12} md={12} collapseBottom style={{paddingTop: 0,paddingBottom:0}}>
                   <PanelContainer noOverflow>
                     <Panel>
                       <PanelBody style={{padding: 0}}>
                         <Grid>
-                          <Row>
-                            <Col xs={12} className='text-center' style={{padding: 25}}>
-                              <Col xs={10} className='text-right'>
-                                <LoadZonesLabel year={this.state.year}/>
-                              </Col>
+                          <Col xs={12} className='text-center' style={{padding: 5}}>
+                            <Col xs={12} className='text-right'>
+                              <LoadZonesLabel year={this.state.year}/>
                             </Col>
-                          </Row>
+                          </Col>
                         </Grid>
                       </PanelBody>
                     </Panel>
@@ -159,18 +196,18 @@ export default class LoadZonesWrapper extends React.Component {
                 </Col>
               </Row>
               <Row>
-                <Col sm={12} >
-                  <PanelContainer collapseBottom>
+                <Col xs={12} sm={12} sm={12} style={{padding: 25, paddingTop:0, paddingBottom:0 }} collapseBottom>
+                  <PanelContainer>
                     <Panel>
-                      <PanelHeader>
-                        <div style={{padding: 25}}>
-                          <div ref="map" style={{height: 550}}>
-                          </div>
-                          <div className='fg-black50 text-center' style={{borderBottom: '1px solid #ccc'}}>
-                            <h5 style={{padding: 12.5, margin: 0}}>Scenario</h5>
-                          </div>
-                        </div>
-                      </PanelHeader>
+                      <PanelBody style={{padding: 0 }}>
+                        <Grid>
+                          <Col xs={12}  style={{padding: 25,paddingBottom:0}}>
+                            <div style={{height: 675}}>
+                              <LoadZonesTable loadZones={this.props.loadZones}/>
+                            </div>
+                          </Col>
+                        </Grid>
+                      </PanelBody>
                     </Panel>
                   </PanelContainer>
                 </Col>
@@ -178,6 +215,6 @@ export default class LoadZonesWrapper extends React.Component {
             </Col>
           </Col>
 
-    );
+        );
   }
 }

@@ -1,6 +1,7 @@
 import { Conections } from '../schemas';
 import { Scenarios } from '../schemas';
 import { LoadZones } from '../schemas';
+import { ProjectInfo } from '../schemas';
 
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
@@ -29,40 +30,56 @@ Meteor.methods({
 
 
      });
-    },
+   },
 
-    "file.remove.scenarios": function(dataArray) {
+   "file.remove.scenarios": function(dataArray) {
 
-      Scenarios.remove({});
+     Scenarios.remove({});
 
-     },
+   },
 
-     "file.add.scenarios": function(dataArray) {
+   "file.add.scenarios": function(dataArray) {
 
-       dataArray.map((data)=>{
+     dataArray.map((data)=>{
 
-         Scenarios.insert(data);
-
-
-       });
-      },
-
-      "file.remove.loadZones": function(dataArray) {
-
-        LoadZones.remove({});
-
-       },
-
-       "file.add.loadZones": function(dataArray) {
-
-         dataArray.map((data)=>{
-
-           LoadZones.insert(data);
+       Scenarios.insert(data);
 
 
-         });
-        },
+     });
+   },
+
+   "file.remove.loadZones": function(dataArray) {
+
+     LoadZones.remove({});
+
+   },
+
+   "file.add.loadZones": function(dataArray) {
+
+     dataArray.map((data)=>{
+
+       LoadZones.insert(data);
+
+
+     });
+   },
+
+   "file.remove.projectInfo": function(dataArray) {
+
+     ProjectInfo.remove({});
+
+   },
+
+   "file.add.projectInfo": function(dataArray) {
+
+     dataArray.map((data)=>{
+
+       ProjectInfo.insert(data);
+
+
+     });
+   },
 
 
 
-});
+ });

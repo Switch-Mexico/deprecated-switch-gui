@@ -38,7 +38,7 @@ class Chart extends React.Component {
           }
         },
         tooltip: {
-          color: '#2EB398',
+          color: 'white',
           format: {
             y: '.0f',
             y: 'd'

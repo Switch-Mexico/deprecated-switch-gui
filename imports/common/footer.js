@@ -23,8 +23,8 @@ export default class Footer extends React.Component {
       <div id='footer-container'>
         <Grid id='footer' className='text-center'>
           <Row>
-            <Col xs={12}>
-              <div>© {year} Switch Team - v0.0.0</div>
+            <Col xs={12} style={{height:10}}>
+              <div>© {year} Switch Team - v0.0.1</div>
             </Col>
           </Row>
         </Grid>

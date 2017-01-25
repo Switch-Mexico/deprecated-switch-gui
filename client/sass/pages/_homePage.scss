@@ -1,0 +1,387 @@
+#sidebar #avatar img{
+  top: 5px !important;
+}
+#rubix-nav-header{
+  top: -21px;
+}
+.MyComponent {
+  background-color: rgb(249,249,249);
+}
+section{
+  height: 100%;
+  width: 100%;
+}
+nav{
+  margin-top: 1.5em;
+  height: 80px;
+}
+
+.container_initial{
+    position: relative;
+    width: 100%;
+    height: 475px;
+    background-color: rgb(0,103,200);
+}
+
+.button_demo{
+  z-index: 99;
+  position: relative;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    height: 45px;
+    letter-spacing: 1px;
+    text-size-adjust: 100%;
+    text-transform: uppercase;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: 237px;
+    perspective-origin: 118.5px 22.5px;
+    transform-origin: 118.5px 22.5px;
+    background: transparent ;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 20px 20px 20px 20px;
+    font: normal normal bold normal 12px / 21.4285px Lato, sans-serif;
+    outline: rgb(255, 255, 255) none 0px;
+    padding: 10px 25px;
+    transition: all 0.6s ease;
+}
+
+.button_demo:hover{
+  background: rgb(255, 255, 255) ;
+  color: rgb(0,143,255);
+}
+
+.container_title{
+  margin-top: 3em;
+  font-family: 'Lato', sans-serif;
+}
+
+.container_title h1, .container_title_description h4{
+  color: rgb(255, 255, 255);
+  text-align: center;
+}
+.container_title h1{
+  font-size: 36px;
+}
+.container_title_description h4{
+font-size: 18px;
+}
+.container_title_description{
+  font-family: 'Lato', sans-serif;
+}
+
+.container_secodary{
+  position: relative;
+  top:-50px;
+  width: 75%;
+  background-color: white;
+  margin: 0 auto;
+}
+
+.logo{
+  cursor: pointer;
+  margin: auto;
+  width: 150px;
+  height: 65px;
+}
+
+
+.logo_berkeley_rael{
+  width: 100%;
+  height: 100px;
+  padding-top: 25px;
+  padding-left: 55px;
+  padding-right: 55px;
+  box-shadow: rgba(0, 0, 0, 0.74902) 1px 4px 18px -1px;
+}
+.logo_rael img, .logo_berkeley img{
+  width: 100%;
+  height: 50px;
+}
+.container_columns{
+  position: relative;
+  width: 73%;
+  height: 300px;
+  margin: 0 auto;
+  padding-bottom: 2em;
+}
+
+.columns{
+  width: 100%;
+  height: 100px;
+}
+
+.columns_icon{
+
+}
+
+.columns_icon img{
+  width: 100%;
+  height: 4em;
+}
+
+.columns_title{
+padding-top: 0.9em;
+}
+
+.columns_title h3{
+  color: #696767;
+  text-align: center;
+}
+
+.columns_text{
+
+}
+
+.columns_text p{
+  font-size: 1em;
+  text-align: center;
+}
+
+.container_description{
+  height: 100%;
+  left:-16px;
+  padding: 2em 0.9em 2.4em;
+  background-color: rgb(249,249,249);
+}
+.container_description p{
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.container_image_full{
+  position:'relative';
+}
+.container_image_full img{
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.container_description2{
+  height: 100%;
+  left:-16px;
+  padding: 2em 0.9em 2.4em;
+  background-color: rgb(249,249,249);
+}
+.container_description2 p{
+  margin-top: 1.8em;
+  text-align: center;
+  font-size: 1.7em;
+}
+
+.container_image_full2{
+  position:'relative';
+  padding: 2em;
+}
+.container_image_full2 img{
+  position: relative;
+  width: 800%;
+  height: 80%;
+}
+
+
+.container_image_full.right img{
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.container_percent{
+  margin-top: 0.5em;
+}
+.colPercent{
+  text-align: center;
+}
+.colPercent .row h3{
+  font-size: 2em;
+  color: #4c80b0;
+}
+.colPercent .row h4{
+  color: #a6a6a6;
+}
+.colPercent .row {
+  margin-top: -20px;
+}
+
+
+
+
+@media (min-width: 1165px) and (max-width: 1333px ) {
+  .container_description{
+    padding: 1em 0.9em 2.4em;
+  }
+  .container_description p{
+    text-align: center;
+    font-size: 0.65em;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1165px ) {
+  .container_button_demo{
+    margin-right: 2em;
+  }
+  .container_description{
+    padding: 1em 0.9em 0.9em;
+  }
+  .container_description p{
+    font-size: 0.6em;
+  }
+  .colPercent .row h3{
+    font-size: 1.4em;
+    color: #4c80b0;
+  }
+  .colPercent .row h4{
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 989px){
+  .logo_berkeley_rael{
+    height: 150px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px){
+  .logo_berkeley img, .logo_rael img{
+    width: 80%;
+    margin: 0 auto;
+  }
+  .logo_berkeley, .logo_rael{
+    text-align: center;
+  }
+  .container_title_description h4{
+    margin-top: 3.5em;
+  }
+  .container_initial{
+    height:400px;
+  }
+  .button_demo{
+    right: 0em;
+  }
+  .container_title h1{
+    display: none;
+  }
+  .container_image_full img{
+    margin:auto;
+    width: 80%;
+    height: 60%;
+  }
+  .colPercent .row h3{
+    font-size: 1.4em;
+  }
+  .colPercent .row h4{
+    font-size: 1em;
+  }
+  .container_image_full{
+    position:'relative';
+    left:0;
+  }
+  .container_button_demo{
+    margin: 1em -1em;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo_berkeley_rael{
+    padding-top: 25px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  .colPercent .row h3{
+    font-size: 1.8em;
+  }
+  .colPercent .row h4{
+    font-size: 1.4em;
+  }
+  .container_image_full{
+    position:'relative';
+    left:0;
+  }
+  .columns_icon img{
+    height: 3em;
+  }
+  .columns_title h3{
+    font-size: 1.1em;
+  }
+  .columns_text p{
+    font-size: 0.7em;
+  }
+  .container_secodary{
+    width: 90%;
+  }
+  .logo_rael{
+    margin-top: 1.2em;
+  }
+  .logo_berkeley img{
+    margin: auto;
+    width: 100%;
+    height: 70px;
+  }
+  .logo_berkeley_rael{
+    height: 190px;
+  }
+  .container_initial{
+    height: 400px;
+  }
+  .container_title{
+    display: none;
+  }
+  .container_button_demo{
+    margin: 1em 0;
+    text-align: center;
+  }
+  .container_title_description{
+    margin: 4em 0;
+  }
+}
+@media (min-width: 550px) and (max-width: 768px) {
+  .columns_icon img{
+    height: 1.5em;
+  }
+  .columns_title h3{
+    font-size: 1em;
+  }
+  .columns_text p{
+    font-size: 0.8em;
+  }
+}
+@media (min-width: 320px) and (max-width: 550px) {
+  .logo_berkeley_rael{
+    height: 180px;
+    padding-top: 25px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .logo_berkeley img, .logo_berkeley_rael img{
+    height: 50px;
+  }
+
+  .container_columns{
+    padding-bottom: 0;
+    height: 200px;
+
+  }
+  .columns_icon img{
+    height: 1.2em;
+  }
+  .columns_title h3{
+    font-size: 0.65em;
+  }
+  .columns_text p{
+    font-size: 0.5em;
+  }
+  .colPercent .row h3{
+    font-size: 1em;
+  }
+  .colPercent .row h4{
+    font-size: 0.9em;
+  }
+  .container_description2{
+    padding-bottom: 0em;
+  }
+  .container_description2 p{
+    font-size: 0.9em;
+  }
+}

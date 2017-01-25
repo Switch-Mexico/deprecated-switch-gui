@@ -99,7 +99,7 @@ export default class HorizontalBarChart extends React.Component {
               }
             },
             tooltip: {
-              color: '#0067c8',
+              color: 'white',
               width: '10px',
               format: {
                 y: '.0f'

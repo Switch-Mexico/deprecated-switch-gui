@@ -72,7 +72,7 @@ export default class MainChart extends React.Component {
             }
           },
           tooltip: {
-            color: '#0067c8',
+            color: 'white',
             format: {
               y: '.0f',
               x: '%x'
