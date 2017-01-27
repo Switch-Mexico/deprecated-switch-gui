@@ -1,0 +1,53 @@
+Giving all these amazing features and data that switch produces to help us in the decision making regarding to the improvement of the electricity grid in Mexico.
+
+
+we still facing the fact that most of the stake holders of switch model whom may actually will use all of these generated
+data do not have the programming skills needed to take the most of our system.
+
+
+I take this weakness and and then a create a solution.
+
+
+I have been designing and developing the foundation of an application that may serve as the graphical user interface for switch.
+
+Hence my goal for this Winter Internship was to create this software seed that from now can be grown with
+output and input files gathered for and from Switch
+
+The main tasks to achieve this were :
+
+First of all since our main target is to give this tool to the government sector then it must be an easy way to
+visualize the most relevant results of a given scenario
+
+another important to point is that most the Switch data has geospatial attributes And for a better understanding
+of the revealed information a human being needs to visualize
+this geospatial information not just as a pair of lat long values but as a representation of a portion of
+the territory that its under the studied
+
+all of these information that I am talking about comes under .csv, .tab and also as shape files that on a
+first glimpse can be overwhelming to see all data with no apparent meaning
+
+So all of these files contains the raw data that we need to crunch in order to produce
+those visualizations that we see on the pappers that Dan and Josiah Patty Shuba have bee working on
+
+I mention this because to processing data was one of the biggest challenges that came up while I was working on it
+
+and if we process the data from all those formats and the we create graphs and maps then we will be ready to test out the system
+
+
+That way I managed to implement three types of visualizations Tables, Graphs and maps
+
+First I analized all the files existing on the records I also ask to experienced contributors to figure out the best way to show the data taking the most
+common used files
+
+
+
+
+
+inputs hasta arriva
+
+aparezca text tab
+
+ mas grafico
+
+
+dos columnas por tipo y data

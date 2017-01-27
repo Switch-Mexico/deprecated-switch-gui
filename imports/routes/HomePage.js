@@ -74,9 +74,9 @@ export default class Homepage extends React.Component {
         <header className="container_initial">
           <Grid>
               <nav>
-                <Col xm={6} sm={5} md={4} >
+                <Col xs={6} sm={5} md={4} >
                 </Col>
-                <Col xm={6} sm={3} md={2} xmOffset={0} smOffset={4} mdOffset={5} >
+                <Col xs={6} sm={3} md={2} xmOffset={0} smOffset={4} mdOffset={5} >
                   <div className='container_button_demo'>
                     <button className="button_demo" onClick={::this.handleNavigation}>Click here to View Demo</button>
                   </div>

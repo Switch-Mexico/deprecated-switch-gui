@@ -146,7 +146,7 @@ export default class Map extends React.Component {
         minZoom: 5
       }).addTo(map);
 
-    var color = [ "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00"];
+    var color = [ "#feb24c","#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00"];
 
     let a = this;
     let nodex = []

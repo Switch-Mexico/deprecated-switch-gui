@@ -12,7 +12,8 @@ class Chart extends React.Component {
   render() {
     return (
       <div id='chart-container'>
-      <div id={this.props.id}></div></div>
+         <div id={this.props.id}></div>
+      </div>
 
     );
   }
@@ -33,7 +34,7 @@ export default class BarColSeries extends React.Component {
 
 
     var chart = new Rubix('#chart', {
-      title: 'Project Information per Load Zone',
+      title: 'Project Information by Load Zone',
       subtitle: this.props.id,
       titleColor: '#ff4949',
       subtitleColor: '#ff4949',
@@ -73,8 +74,6 @@ export default class BarColSeries extends React.Component {
 
       });
 
-
-      console.log(values,"values");
 
       chart.column_series({
         name: 'Capacity Limit',

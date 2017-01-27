@@ -75,13 +75,13 @@ class DatatableComponent extends React.Component {
 
     let data = this.props.transmission;
 
-    console.log(data)
+
     let rowx = data.map((row , index)=>{
 
       return this.writeRow(row, index);
 
     });
-    console.log(rowx)
+
 
     const table = $(ReactDOM.findDOMNode(this.example))
                   .DataTable({"pageLength": 13})
@@ -128,6 +128,7 @@ export default class Datatablesjs extends React.Component {
   }
 
   render() {
+    console.log(this.props.transmission)
     return (
       <Row>
         <Col xs={12} style={{padding:25}}>

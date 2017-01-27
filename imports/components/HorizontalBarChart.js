@@ -61,17 +61,18 @@ export default class HorizontalBarChart extends React.Component {
 
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.data[0].values,"values")
+
     if (this.state.render[0].values != nextProps.data[0].values){
     (() => {
 
-      var colors = { '00':"#feb24c",'01': "#E34A33" , '02': "#2B8CBE", '03': "#2CA25F", '04': "#C51B8A", '05': "#E6550D", '06': "#756BB1",'07':"#636363", '08':"#DD1C77", '09': "#1C9099",'10':'#0067c8'};
+      var colors = { '02': "#E34A33" , '03': "#2B8CBE", '04': "#2CA25F", '05': "#C51B8A", '06': "#E6550D", '07': "#756BB1",'08':"#636363", '09':"#DD1C77", '10': "#1C9099",'11':'#0067c8'};
 
 
       let label = '#'+nextProps.id;
       let container_label = '#'+nextProps.container;
       let long_label = '<div id="'+nextProps.id+'"></div>';
       let color = nextProps.color.substr(0, 2);
+      console.log(color)
 
 
       $(label).remove();

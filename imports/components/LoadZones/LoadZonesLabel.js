@@ -18,9 +18,9 @@ export default class TransmissionLabel extends React.Component {
 
     return (
       <div style={{padding:15}}>
-          <Col sm={12}>
+          <Col sm={12} style={{marginBottom: 12.5}}>
             <div className='map-dest' style={{marginBottom: 12.5, height: 10}}>
-              <h3 className='fg-black50 text-left' style={{color: '#0067c8',marginTop:0}}>
+              <h3 className='fg-black50 text-left' style={{color: '#ff4949',marginTop:0}}>
               <Icon glyph='icon-fontello-dot-circled'/>{' '}
                   Load Zones
               </h3>

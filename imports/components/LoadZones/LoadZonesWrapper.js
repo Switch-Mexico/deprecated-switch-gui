@@ -56,7 +56,6 @@ export default class LoadZonesWrapper extends React.Component {
 
   handleClick(id){
 
-    console.log("nischt",id)
 
     let info = this.props.info.map((row,key)=>{
 
@@ -66,6 +65,8 @@ export default class LoadZonesWrapper extends React.Component {
     info = info.filter(function(row) {
       return row != undefined;
     });
+
+    console.log(info);
 
     this.setState({load_zone:info,load_zone_id:id});
 
@@ -128,7 +129,7 @@ export default class LoadZonesWrapper extends React.Component {
       }).addTo(this.state.maps);
 
     this.showMap();
-    console.log(this.props.load_zone)
+
     this.handleClick('01');
 
 
@@ -136,7 +137,7 @@ export default class LoadZonesWrapper extends React.Component {
 
   render() {
 
-    if (!this.props.loadZones && !this.state.load_zone){
+    if (!this.props.loadZones && !this.state.load_zone && !this.props.info){
       return(<div>Loading...</div>);
     }
 
@@ -163,7 +164,7 @@ export default class LoadZonesWrapper extends React.Component {
             </Row>
             <Row>
               <Col sm={12} xs={12} md={12} collapseBottom >
-                <PanelContainer style={{marginBottom: 0}}>
+                <PanelContainer style={{marginBottom: 0+'!important'}}>
                   <Panel>
                     <PanelHeader>
                       <Col sm={12} xs={12} md={12}  style={{paddingTop: 25, paddingBottom:0}}>
@@ -179,7 +180,7 @@ export default class LoadZonesWrapper extends React.Component {
             </Col>
             <Col xs={12} xs={12} sm={5} style={{paddingLeft: 25, paddingRight:25}} >
               <Row>
-                <Col xs={12} sm={12} md={12} collapseBottom style={{paddingTop: 0,paddingBottom:0}}>
+                <Col xs={12} sm={12} md={12} collapseBottom style={{paddingTop: 0,paddingBottom:0, paddingRight:0}}>
                   <PanelContainer noOverflow>
                     <Panel>
                       <PanelBody style={{padding: 0}}>
@@ -196,14 +197,14 @@ export default class LoadZonesWrapper extends React.Component {
                 </Col>
               </Row>
               <Row>
-                <Col xs={12} sm={12} sm={12} style={{padding: 25, paddingTop:0, paddingBottom:0 }} collapseBottom>
+                <Col xs={12} sm={12} sm={12} style={{padding: 25, paddingTop:0, paddingBottom:0, paddingRight:0}} collapseBottom>
                   <PanelContainer>
                     <Panel>
                       <PanelBody style={{padding: 0 }}>
                         <Grid>
-                          <Col xs={12}  style={{padding: 25,paddingBottom:0}}>
+                          <Col xs={12}  style={{padding: 25,paddingBottom:0, paddingLeft:0}} collapseLeft>
                             <div style={{height: 675}}>
-                              <LoadZonesTable loadZones={this.props.loadZones}/>
+                              <LoadZonesTable loadZones={this.props.loadZones} info={this.props.info}/>
                             </div>
                           </Col>
                         </Grid>

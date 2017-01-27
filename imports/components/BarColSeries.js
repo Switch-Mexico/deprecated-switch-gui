@@ -15,7 +15,7 @@ class Chart extends React.Component {
     );
   }
 }
-var color = [ "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00"];
+var color = ["#feb24c", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00"];
 
 
 export default class BarColSeries extends React.Component {

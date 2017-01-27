@@ -47,19 +47,24 @@ class DatatableComponent extends React.Component {
 
 
   writeRow( row, index ) {
+    console.log(row);
 
-    let lzs = row['LOAD_ZONE'].split("-");
+    let lzs = row['proj_load_zone'].split("-");
 
     let id = lzs[0];
     let lz = capitalize(lzs[1]);
+    let project = row['PROJECT'];
+    let tech = row['proj_gen_tech'];
+    let col1 = capitalize(project);
+    let col0 = capitalize(tech);
+    let col2 = lz;
+    let col3 = Number(row['proj_capacity_limit_mw']).toFixed(2);
+    // let existing_local_td = Number(row['existing_local_td']).toFixed(2);
+    //
+    // let local_td_annual_cost_per_mw = Number(row['local_td_annual_cost_per_mw']);
+    // local_td_annual_cost_per_mw = local_td_annual_cost_per_mw.toFixed(2);
 
-    let lz_cost_multipliers = row['lz_cost_multipliers'];
-    let existing_local_td = Number(row['existing_local_td']).toFixed(2);
-
-    let local_td_annual_cost_per_mw = Number(row['local_td_annual_cost_per_mw']);
-    local_td_annual_cost_per_mw = local_td_annual_cost_per_mw.toFixed(2);
-
-    return ([index+1,id,lz,lz_cost_multipliers,existing_local_td ,local_td_annual_cost_per_mw]);
+    return ([col0, col1, col2, col3]);
 
   }
 
@@ -78,7 +83,7 @@ class DatatableComponent extends React.Component {
 
   reloadTableData() {
 
-    let data = this.props.loadZones;
+    let data = this.props.info; // uses the project_info.tab
 
     let rowx = data.map((row , index)=>{
 
@@ -97,25 +102,21 @@ class DatatableComponent extends React.Component {
     }
 
     return (
-      <Table ref={(c) => this.example = c} className='display' cellSpacing='0' width='100%'>
+      <Table ref={(c) => this.example = c} className='display' cellSpacing='0' width='100%' style={{paddingLeft:0}}>
         <thead>
           <tr>
-            <th></th>
-            <th>ID</th>
+            <th>Tech</th>
+            <th>Project</th>
             <th>Load Zone</th>
-            <th>Cost Multipliers</th>
-            <th>Local TD</th>
-            <th>A. C. per MW</th>
+            <th>Capacity [ MW ]</th>
           </tr>
         </thead>
         <tfoot>
           <tr>
-            <th></th>
-            <th>ID</th>
+            <th>Tech</th>
+            <th>Project</th>
             <th>Load Zone</th>
-            <th>Cost Multipliers</th>
-            <th>Local TD</th>
-            <th>A. C. per MW</th>
+            <th>Capacity [ MW ]</th>
           </tr>
         </tfoot>
         <tbody>
@@ -134,8 +135,8 @@ export default class Datatablesjs extends React.Component {
   render() {
     return (
       <Row>
-        <Col xs={12} style={{padding:25,paddingBottom:0}}>
-          <DatatableComponent loadZones={this.props.loadZones} />
+        <Col xs={12} style={{padding:15,paddingBottom:0}}>
+          <DatatableComponent loadZones={this.props.loadZones} info={this.props.info}/>
           <br/>
         </Col>
       </Row>
