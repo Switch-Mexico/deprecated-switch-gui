@@ -43,18 +43,18 @@ export default class TransmissionWrapper extends React.Component {
     };
   }
 
-  clearMap() {  //this fun clean the map to show new data
-
-  for(let i in this.state.maps._layers) { //get all the map layers
-      if(this.state.maps._layers[i]._path != undefined) {
-          try {
-              this.state.maps.removeLayer(this.state.maps._layers[i]); //delete a layer
-          }
-          catch(e) {
-              console.log("problem with " + e + this.state.maps._layers[i]); // if error then
-          }
+  clearMap(layer,zIndx) {  //this function clean the map to show new data
+console.log(this.state.maps._layers)
+    for(let i in this.state.maps._layers) { //get all the map layers
+    if(this.state.maps._layers[i]._path != undefined && this.state.maps._layers[i].options.pane == layer) {
+        try {
+            this.state.maps.removeLayer(this.state.maps._layers[i]); //delete a layer
+        }
+        catch(e) {
+            console.log("problem with " + e + this.state.maps._layers[i]); // if error then
         }
       }
+    }
 
     }
 
@@ -78,11 +78,11 @@ export default class TransmissionWrapper extends React.Component {
 
       for (let row of data){
 
-        let lz1 = row['lz1'].substring(0,2); //get the id of transmission line from row in file (firsst two digits)
+        let lz1 = row['lz1'].substring(0,2); //get the id of transmission line from row in file (first two digits)
         let lz2 = row['lz2'].substring(0,2);
-        let weight = this.getWeight(row['existing_trans_cap_mw']); //call funct to get weoght
+        let weight = this.getWeight(row['existing_trans_cap_mw']); //call funct to get weight
         nodex = [coordinates[lz1],coordinates[lz2]];  //get the coordinates of the oadzones by id
-        L.polyline(nodex, {color: '#0067c8',weight:weight}).addTo(a.state.maps); // draw a line from point A to point B
+        L.polyline(nodex, {color: '#0067c8',weight:weight,pane:'blue'}).addTo(a.state.maps); // draw a line from point A to point B
 
 
       }
@@ -99,7 +99,8 @@ export default class TransmissionWrapper extends React.Component {
          fillColor: '#0067c8',
          fillOpacity: .3,
          opacity:.3,
-         radius: 25000
+         radius: 25000,
+         pane:'blue'
        }).addTo(a.state.maps);
        i++;
      }});
@@ -124,7 +125,7 @@ export default class TransmissionWrapper extends React.Component {
     let lz2 = lzs[2];
     let weight = this.getWeight(row['BuildTrans']); //get the underlying weight
     nodex = [coordinates[lz1],coordinates[lz2]]; //set corrdinates obteined from coordinates.json file
-    L.polyline(nodex, {color: '#ff4949',weight:weight}).addTo(this.state.maps); //draw the poyline
+    L.polyline(nodex, {color: '#ff4949',weight:weight,pane:'red'}).addTo(this.state.maps); //draw the poyline
 
 
   }
@@ -134,9 +135,7 @@ export default class TransmissionWrapper extends React.Component {
 
   showNewPoints(data,period){
 
-    this.clearMap();
-    this.showMap();
-
+    this.clearMap('red');
 
     if (period == "All New") {
 
@@ -165,15 +164,35 @@ export default class TransmissionWrapper extends React.Component {
 
     this.state.maps = L.map(this.refs.map);
 
+
     this.state.maps.setView([23,-105], 5);
     var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
 
+    this.state.maps.createPane('labels');
+    this.state.maps.getPane('labels').style.zIndex = 0;
 
-    L.tileLayer(
-      'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
-        attribution: '&copy; ' + mapLink + ' Contributors',
-        minZoom: 5,
+    this.state.maps.createPane('blue');
+    this.state.maps.getPane('blue').style.zIndex = 500;
+
+    this.state.maps.createPane('red');
+    this.state.maps.getPane('red').style.zIndex = 850;
+
+    this.state.maps.createPane('description');
+    this.state.maps.getPane('description').style.zIndex = 750;
+
+
+
+
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
+        attribution: '©OpenStreetMap, ©CartoDB'
       }).addTo(this.state.maps);
+
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+      attribution: '©OpenStreetMap, ©CartoDB',
+      pane: 'labels'
+    }).addTo(this.state.maps);
+
+
 
     var color = [ "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00"];
 

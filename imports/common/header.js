@@ -55,26 +55,25 @@ class HeaderNavigation extends React.Component {
 
 export default class Header extends React.Component {
   render() {
+
     return (
-      <Grid id='navbar' {...this.props}>
-        <Row>
-          <Col xs={12}>
-            <Navbar fixedTop fluid id='rubix-nav-header'>
-              <Row>
-                <Col xs={3} visible='xs'>
-                  <SidebarBtn />
-                </Col>
-                <Col xs={6} sm={4}>
-                  <Brand />
-                </Col>
-                <Col xs={3} sm={8} collapseRight className='text-right'>
-                  <HeaderNavigation />
-                </Col>
-              </Row>
-            </Navbar>
-          </Col>
-        </Row>
+    <Col xs={12} visible='xs'>
+      <Grid id='navbar' {...this.props} visible='xs'>
+        <Col xs={12} >
+          <Row >
+            <Col xs={12}>
+              <Navbar fixedTop fluid id='rubix-nav-header' >
+                <Row>
+                  <Col xs={3} visible='xs'>
+                    <SidebarBtn />
+                  </Col>
+                </Row>
+              </Navbar>
+            </Col>
+          </Row>
+        </Col>
       </Grid>
-    );
-  }
+    </Col>
+  );
+}
 }

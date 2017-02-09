@@ -209,15 +209,20 @@ export default class Dashboard extends React.Component {
 
     var map = L.map(this.refs.mapi);
 
-    map.setView([23,-105], 4);
+    map.setView([23,-105], 13);
     var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
 
+    map.createPane('labels');
+    map.getPane('labels').style.zIndex = 650;
 
-    L.tileLayer(
-      'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
-        attribution: '&copy; ' + mapLink + ' Contributors',
-        minZoom: 4
-      }).addTo(map);
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
+      attribution: '©OpenStreetMap, ©CartoDB'
+    }).addTo(map);
+
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+      attribution: '©OpenStreetMap, ©CartoDB',
+      pane: 'labels'
+    }).addTo(map);
 
 
     let a = this;

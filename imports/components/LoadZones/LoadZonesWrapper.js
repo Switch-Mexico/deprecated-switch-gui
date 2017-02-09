@@ -118,15 +118,23 @@ export default class LoadZonesWrapper extends React.Component {
 
     this.state.maps = L.map(this.refs.map);
 
+
     this.state.maps.setView([23,-105], 5);
     var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
 
+    this.state.maps.createPane('labels');
+    this.state.maps.getPane('labels').style.zIndex = 650;
 
-    L.tileLayer(
-      'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
-        attribution: '&copy; ' + mapLink + ' Contributors',
-        minZoom: 5,
+
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
+        attribution: '©OpenStreetMap, ©CartoDB'
       }).addTo(this.state.maps);
+
+      L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+          attribution: '©OpenStreetMap, ©CartoDB',
+          pane: 'labels'
+  }).addTo(this.state.maps);
+
 
     this.showMap();
 

@@ -138,13 +138,17 @@ export default class Map extends React.Component {
     map.setView([23,-105], 13);
     var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
 
+    map.createPane('labels');
+    map.getPane('labels').style.zIndex = 650;
 
-    L.tileLayer(
-      'http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
-        attribution: '&copy; ' + mapLink + ' Contributors',
-        maxZoom: 5,
-        minZoom: 5
-      }).addTo(map);
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
+      attribution: '©OpenStreetMap, ©CartoDB'
+    }).addTo(map);
+
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+      attribution: '©OpenStreetMap, ©CartoDB',
+      pane: 'labels'
+    }).addTo(map);
 
     var color = [ "#feb24c","#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00"];
 
