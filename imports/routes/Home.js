@@ -55,6 +55,8 @@ import node9 from '../nodes/node_09';
 
 
 const color = [ "#feb24c","#E34A33","#2B8CBE","#2CA25F","#C51B8A","#E6550D","#756BB1","#636363","#DD1C77","#1C9099"];
+const balancing_areas = ['01-central','02-oriental','03-occidental','04-noroeste','05-norte','06-noreste','07-peninsular','08-baja_california','09-baja_california_sur'];
+const balancing_area = ['Central','Oriental','Occidental','Noroeste','Norte','Noreste','Peninsular','Baja California','Baja California Sur'];
 
 
 function capitalize(str) {
@@ -76,12 +78,20 @@ export default class Dashboard extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleClickNode = this.handleClickNode.bind(this);
     this.nationalData = this.nationalData.bind(this);
+    this.highlightFeature = this.highlightFeature.bind(this);
+    this.resetHighlight = this.resetHighlight.bind(this);
+    this.zoomToFeature = this.zoomToFeature.bind(this);
+    this.setLegend = this.setLegend.bind(this);
+
+
+
 
     this.state = {
 
       data:[{values:0}],
       nodexe:[{values:0}],
       rerender:false,
+      mapInfo:0,
       load_zone_id:"",
       balancing_area_id:"",
       load_zone_name:"",
@@ -121,7 +131,65 @@ export default class Dashboard extends React.Component {
 
   }
 
+
+  setLegend(color,balancing_areas){
+
+    let legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function (map) {
+
+      let div = L.DomUtil.create('div', 'info legend');
+      // loop through our balancing_areas and generate a label with a colored square for each balancing_area
+      balancing_areas.forEach(function(b_a,i) {
+
+        div.innerHTML += '<i style="background:' + color[i] + '"></i> ' + b_a + '<br>';
+      });
+
+      return div;
+    };
+
+    return legend;
+
+  }
+
+  highlightFeature(layer,props,map){
+
+    layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 1
+    });
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+    }
+
+    this.state.mapInfo.update(layer.feature.properties);
+
+  }
+
+  resetHighlight(layer,map){
+    layer.setStyle({
+      weight: 2,
+      opacity: 1,
+      color: 'white',
+      dashArray: '3',
+      fillOpacity: 0.7
+    });
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+    }
+    this.state.mapInfo.update();
+  }
+
+  zoomToFeature(layer,map){
+    map.fitBounds(layer.getBounds());
+  }
+
   handleClickNode(e){
+    console.log(e);
 
 
     d3.csv("/data/PowerPlants.csv", (error, data) => {
@@ -233,24 +301,43 @@ export default class Dashboard extends React.Component {
     let i = 0;
 
 
+
+
     for (let n of nodes){
+    //functon to iterate over the gejson files and attach them a click funcion per feature (polygon, point .. shape)
 
       nodex.push(
         L.geoJson(n,{
-        color:color[i],
-        fillOpacity:1,
+        fillColor:color[i],
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity:.7,
         onEachFeature:function (feature, layer) {
 
           layer.on('click', function(e) {
-              let v = feature.properties.ID;
-              a.handleClickNode(v);
+            console.log(layer,feature, "taaarget")
+              let id = feature.properties.ID;
+              a.zoomToFeature(layer,map);
+              a.handleClickNode(id);
+
           });
+
+          layer.on('mouseover', function(e) {
+              a.highlightFeature(layer,layer.feature.properties,map);
+          });
+
+          layer.on('mouseout', function(e) {
+              a.resetHighlight(layer,map);
+          });
+
         }}));
       i++;
     }
 
-    let balancing_areas = ['01-central','02-oriental','03-occidental','04-noroeste','05-norte','06-noreste','07-peninsular','08-baja_california','09-baja_california_sur'];
-    this.handleClick('01-central');
+
+    this.handleClick('01-central'); // execute these funtions in order to show some info when application starts
     this.handleClickNode("31");
     this.nationalData();
     let j = 0;
@@ -265,7 +352,41 @@ export default class Dashboard extends React.Component {
 
     }
 
+    let mapInfo = this.setInfo();
+    let legend = this.setLegend(color,balancing_area);
+
+    this.setState({mapInfo:mapInfo})
+
+    mapInfo.addTo(map);
+    legend.addTo(map);
+
+
+
+
   }
+
+  setInfo(){
+
+    let info = L.control();
+
+    info.onAdd = function (map) {
+      this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+      this.update();
+      return this._div;
+    };
+
+    // method that we will use to update the control based on feature properties passed
+    info.update = function (props) {
+      this._div.innerHTML = '<h4>Mexico</h4>' +  (props ?
+        '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
+        : 'Hover over a Load Zone');
+      };
+
+      return info;
+  }
+
+
+
 
 
   render() {
@@ -286,10 +407,7 @@ export default class Dashboard extends React.Component {
               <Panel>
                 <PanelHeader>
                   <div style={{padding: 10}}>
-                    <div ref="mapi" style={{height: 400}}></div>
-                    <div className='fg-black50 text-center'>
-                      <h5>Mexico - SCENARIO</h5>
-                    </div>
+                    <div ref="mapi" style={{height: 600}}></div>
                   </div>
                 </PanelHeader>
               </Panel>

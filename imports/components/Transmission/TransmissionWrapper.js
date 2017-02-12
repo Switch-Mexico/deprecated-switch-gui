@@ -29,13 +29,15 @@ export default class TransmissionWrapper extends React.Component {
     super(props);
     this.showNewPoints = this.showNewPoints.bind(this); // declare all the functions that will be available
     this.getPeriod = this.getPeriod.bind(this);
-    this.clearMap = this.clearMap.bind(this);
     this.showMap = this.showMap.bind(this);
+    this.setLegend = this.setLegend.bind(this);
     this.getWeight = this.getWeight.bind(this);
-    this.drawPolylines = this.drawPolylines.bind(this);
+
     this.state = { /// declare initial state
 
       data:0,
+      blueLines:0,
+      redLines:{},
       nodexe:0,
       maps:0,
       period:0
@@ -43,20 +45,6 @@ export default class TransmissionWrapper extends React.Component {
     };
   }
 
-  clearMap(layer,zIndx) {  //this function clean the map to show new data
-console.log(this.state.maps._layers)
-    for(let i in this.state.maps._layers) { //get all the map layers
-    if(this.state.maps._layers[i]._path != undefined && this.state.maps._layers[i].options.pane == layer) {
-        try {
-            this.state.maps.removeLayer(this.state.maps._layers[i]); //delete a layer
-        }
-        catch(e) {
-            console.log("problem with " + e + this.state.maps._layers[i]); // if error then
-        }
-      }
-    }
-
-    }
 
     getWeight(mw){ // set the weight of the transmission line
 
@@ -70,40 +58,80 @@ console.log(this.state.maps._layers)
 
     }
 
-    showMap(){ ///draw the new transmission lines
+    setLegend(){
+
+      let legend = L.control({position: 'bottomright'});
+      let color = ['#0067c8','#ff4949'];
+      let transmission_lines = ['Legacy Transmission Lines', 'Switch\'s Transmission Lines'];
+
+      legend.onAdd = function (map) {
+
+        let div = L.DomUtil.create('div', 'info legend');
+        // loop through our transmission_lines and generate a label with a colored square for each transmission_line
+        transmission_lines.forEach(function(t_l,i) {
+
+          div.innerHTML += '<i style="background:' + color[i] + '"></i> ' + t_l + '<br>';
+        });
+
+        return div;
+      };
+
+      return legend;
+
+    }
+
+    showMap(mapa){ ///draw the new transmission lines
       let a = this;
       let nodex = []
 
+      let b = [];
+
+      let data = []
+
       d3.csv("/data/transmission_lines.csv", (error, data) => { //get the current transmission lines from file
 
-      for (let row of data){
+         data = data.filter(function(row) {
+           return row;
+         });
 
-        let lz1 = row['lz1'].substring(0,2); //get the id of transmission line from row in file (first two digits)
-        let lz2 = row['lz2'].substring(0,2);
-        let weight = this.getWeight(row['existing_trans_cap_mw']); //call funct to get weight
-        nodex = [coordinates[lz1],coordinates[lz2]];  //get the coordinates of the oadzones by id
-        L.polyline(nodex, {color: '#0067c8',weight:weight,pane:'blue'}).addTo(a.state.maps); // draw a line from point A to point B
+         data.map((row , index)=>{
+
+           let lz1 = row['lz1'].substring(0,2); //get the id of transmission line from row in file (first two digits)
+           let lz2 = row['lz2'].substring(0,2);
+           let weight = this.getWeight(row['existing_trans_cap_mw']); //call funct to get weight
+           nodex = [coordinates[lz1],coordinates[lz2]];  //get the coordinates of the oadzones by id
+           b.push(L.polyline(nodex, {color: '#0067c8',weight:weight,pane:'blue'})); // draw a line from point A to point B
+
+         });
+
+         L.geoJson(points,{ // draw all the points from file imports> nodes > Points > points.json
+
+         onEachFeature:function (feature, layer) { // iterate over all the features from points.json files
+           let latlng = feature.geometry.coordinates;
+
+          L.circle([latlng[1],latlng[0]], {
+             color: '#0067c8', //set the points color opacity and radius
+             fillColor: '#0067c8',
+             fillOpacity: .3,
+             opacity:.3,
+             radius: 25000,
+             pane:'blue'
+           }).addTo(mapa);
 
 
-      }
+
+         }});
+
+
+
+         b = L.layerGroup(b);
+
+         a.setState({blueLines:b})
+
 
      });
 
 
-     let i = 0
-     L.geoJson(points,{ // draw all the points from file imports> nodes > Points > points.json
-     onEachFeature:function (feature, layer) { // iterate over all the features from points.json files
-       let latlng = feature.geometry.coordinates;
-       L.circle([latlng[1],latlng[0]], {
-         color: '#0067c8', //set the points color opacity and radius
-         fillColor: '#0067c8',
-         fillOpacity: .3,
-         opacity:.3,
-         radius: 25000,
-         pane:'blue'
-       }).addTo(a.state.maps);
-       i++;
-     }});
    }
 
 
@@ -117,44 +145,43 @@ console.log(this.state.maps._layers)
 
   }
 
-  drawPolylines(row){ // draw the new lines from droped file
 
-    let nodex = []
-    let lzs = row['TRANS_BUILD_YEARS_1'].split("-"); //get the names of the transmission lines
-    let lz1 = lzs[0]; // set transmission line one and two
-    let lz2 = lzs[2];
-    let weight = this.getWeight(row['BuildTrans']); //get the underlying weight
-    nodex = [coordinates[lz1],coordinates[lz2]]; //set corrdinates obteined from coordinates.json file
-    L.polyline(nodex, {color: '#ff4949',weight:weight,pane:'red'}).addTo(this.state.maps); //draw the poyline
+  showNewPoints(mapa,data,period,blueLines){
 
+    let a = this;
+    let overlayMaps = {};
 
-  }
+    period.forEach(function(year) {
 
+      let lines = [];
 
+      data.map((row , index)=>{
 
+        if (row['TRANS_BUILD_YEARS_2'] == year){
 
-  showNewPoints(data,period){
+          let nodex = [];
 
-    this.clearMap('red');
+          let lzs = row['TRANS_BUILD_YEARS_1'].split("-"); //get the names of the transmission lines
+          let lz1 = lzs[0]; // set transmission line one and two
+          let lz2 = lzs[2];
+          let weight = a.getWeight(row['BuildTrans']); //get the underlying weight
+          nodex = [coordinates[lz1],coordinates[lz2]]; //set corrdinates obteined from coordinates.json file
+          let polyline = L.polyline(nodex, {color: '#ff4949',weight:weight,pane:'red'}); //draw the poyline
+          lines.push(polyline);
 
-    if (period == "All New") {
+        }
 
-      for (let row of data){
-        this.drawPolylines(row);
-      }
-    } else {
-
-      for (let row of data){
-        if (row['TRANS_BUILD_YEARS_2'] == period){this.drawPolylines(row);}
-      }
-    }
+      });
 
 
-    this.setState({
-      year:period
+      lines  = L.layerGroup(lines);
+
+      overlayMaps[year]=lines;
+
     });
 
-
+    overlayMaps["Current Transmission Lines"] = blueLines;
+    L.control.layers({},overlayMaps).addTo(mapa);
 
   }
 
@@ -164,50 +191,44 @@ console.log(this.state.maps._layers)
 
     this.state.maps = L.map(this.refs.map);
 
-
     this.state.maps.setView([23,-105], 5);
     var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
 
-    this.state.maps.createPane('labels');
-    this.state.maps.getPane('labels').style.zIndex = 0;
+    let mapa  = this.state.maps;
 
-    this.state.maps.createPane('blue');
-    this.state.maps.getPane('blue').style.zIndex = 500;
+    mapa.createPane('labels');
+    mapa.getPane('labels').style.zIndex = 0;
 
-    this.state.maps.createPane('red');
-    this.state.maps.getPane('red').style.zIndex = 850;
+    mapa.createPane('blue');
+    mapa.getPane('blue').style.zIndex = 500;
 
-    this.state.maps.createPane('description');
-    this.state.maps.getPane('description').style.zIndex = 750;
+    mapa.createPane('red');
+    mapa.getPane('red').style.zIndex = 850;
 
+    mapa.createPane('description');
+    mapa.getPane('description').style.zIndex = 750;
 
 
 
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
         attribution: '©OpenStreetMap, ©CartoDB'
-      }).addTo(this.state.maps);
+      }).addTo(mapa);
 
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
       attribution: '©OpenStreetMap, ©CartoDB',
       pane: 'labels'
-    }).addTo(this.state.maps);
+    });
+
+    this.showMap(mapa);
+    let legend = this.setLegend();
+
+    legend.addTo(mapa);
 
 
 
-    var color = [ "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00", "#FF55EE","#0084FF","#00EFFF","#51FF00","#4B2CE8","#FF9900","#FF0000","#999999","#CDFF00"];
 
-
-
-
-    this.showMap();
 
   }
-
-
-
-
-
-
 
   render() {
 
@@ -224,15 +245,12 @@ console.log(this.state.maps._layers)
     });
 
     let period = this.getPeriod(data);
-    period.push("All New");
 
-    let items = period.map((item , index)=>{
-      return (
-        <MenuItem key={index} onClick={()=>{this.showNewPoints(data,item)}} eventKey={index+1} >
-          {item}
-        </MenuItem>
-      );
-    });
+    if(this.state.blueLines != 0)
+    {
+      console.log(this.state.blueLines,"----------------------------------")
+      this.showNewPoints(this.state.maps,data,period,this.state.blueLines);}
+
 
     return (
           <Col sm={12}>
@@ -258,33 +276,6 @@ console.log(this.state.maps._layers)
 
             </Col>
             <Col sm={7}>
-              <Row>
-                <Col sm={12} collapseRight>
-                  <PanelContainer noOverflow>
-                    <Panel>
-                      <PanelBody style={{padding: 0}}>
-                        <Grid>
-                          <Row>
-                            <Col xs={12} className='text-center' style={{padding: 25}}>
-                              <Col xs={10} className='text-right'>
-                                <TransmissionLabel year={this.state.year}/>
-                              </Col>
-                              <Col xs={2} className='text-right'>
-                                <div>
-                                  <DropdownButton outlined bsStyle='brightblue' title='Filter By' id='dropdown-outlined-dropup' pullRight>
-                                    {items}
-                                  </DropdownButton>
-                                </div>
-                                <br />
-                              </Col>
-                            </Col>
-                          </Row>
-                        </Grid>
-                      </PanelBody>
-                    </Panel>
-                  </PanelContainer>
-                </Col>
-              </Row>
               <Row>
                 <Col sm={12} >
                   <PanelContainer collapseBottom>

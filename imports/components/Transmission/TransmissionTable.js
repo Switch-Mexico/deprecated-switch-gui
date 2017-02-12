@@ -128,7 +128,7 @@ export default class Datatablesjs extends React.Component {
   }
 
   render() {
-    console.log(this.props.transmission)
+
     return (
       <Row>
         <Col xs={12} style={{padding:25}}>

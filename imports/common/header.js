@@ -58,7 +58,7 @@ export default class Header extends React.Component {
 
     return (
     <Col xs={12} visible='xs'>
-      <Grid id='navbar' {...this.props} visible='xs'>
+      <Grid id='navbar' {...this.props}>
         <Col xs={12} >
           <Row >
             <Col xs={12}>
