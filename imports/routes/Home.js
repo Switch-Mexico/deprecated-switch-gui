@@ -134,7 +134,7 @@ export default class Dashboard extends React.Component {
 
   setLegend(color,balancing_areas){
 
-    let legend = L.control({position: 'bottomright'});
+    let legend = L.control({position: 'bottomleft'});
 
     legend.onAdd = function (map) {
 
@@ -317,7 +317,6 @@ export default class Dashboard extends React.Component {
         onEachFeature:function (feature, layer) {
 
           layer.on('click', function(e) {
-            console.log(layer,feature, "taaarget")
               let id = feature.properties.ID;
               a.zoomToFeature(layer,map);
               a.handleClickNode(id);
@@ -402,7 +401,7 @@ export default class Dashboard extends React.Component {
     return (
       <div className='dashboard'>
         <Row>
-          <Col sm={6}>
+          <Col sm={7}>
             <PanelContainer>
               <Panel>
                 <PanelHeader>
@@ -424,7 +423,7 @@ export default class Dashboard extends React.Component {
               </Panel>
             </PanelContainer>
           </Col>
-          <Col sm={6} collapseLeft>
+          <Col sm={5} collapseLeft>
             <PanelContainer noOverflow>
               <Panel>
                 <PanelBody style={{padding: 0}}>

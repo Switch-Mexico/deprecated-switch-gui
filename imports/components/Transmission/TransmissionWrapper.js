@@ -40,27 +40,48 @@ export default class TransmissionWrapper extends React.Component {
       redLines:{},
       nodexe:0,
       maps:0,
-      period:0
+      period:0,
+      mapInfo:0
 
     };
   }
 
+  capitalize(str) {
+       var splittedEnter = str.split(" ");
+       var capitalized;
+       var capitalizedResult;
+       for (var i = 0 ; i < splittedEnter.length ; i++){
+           capitalized = splittedEnter[i].charAt(0).toUpperCase();
+           splittedEnter[i] = capitalized + splittedEnter[i].substr(1).toLowerCase();
+      }
+      return splittedEnter.join(" ");
+  }
 
-    getWeight(mw){ // set the weight of the transmission line
+  setInfo(){
 
-      if (mw == 0) { return 1 } else
-      if (mw < 100) { return 3 } else
-      if (mw >= 100 && mw < 500) { return 4 } else
-      if (mw >= 500 && mw < 1000) { return 5 } else
-      if (mw >= 1000 && mw < 2000) { return 6 } else
-      if (mw >= 2000 && mw < 4000) { return 7 } else
-      if (mw >= 4000) { return 8 }
+    let info = L.control();
 
+    info.onAdd = function (map) {
+      this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+      this.update();
+      return this._div;
+    };
+
+    // method that we will use to update the control based on feature properties passed
+    info.update = function (props) {
+      this._div.innerHTML = '<h4>Mexico\'s Transmission Lines</h4>' +  (props ?
+        '<b> From '  + props.from +' to ' + props.to+ '</b><br />' +'Capacity: ' + props.capacity + '  [MW]'
+        : 'Hover over a Transmission Line');
+      };
+
+      return info;
     }
 
-    setLegend(){
 
-      let legend = L.control({position: 'bottomright'});
+
+    setLegend(){ //legend that displays the information related to red and blue transmissionlines
+
+      let legend = L.control({position: 'bottomleft'});
       let color = ['#0067c8','#ff4949'];
       let transmission_lines = ['Legacy Transmission Lines', 'Switch\'s Transmission Lines'];
 
@@ -80,6 +101,56 @@ export default class TransmissionWrapper extends React.Component {
 
     }
 
+
+
+    highlightFeature(layer,props,map){
+
+      layer.setStyle({
+          weight: 5,
+          color: '#666',
+          dashArray: '',
+          fillOpacity: 1
+      });
+
+      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+          layer.bringToFront();
+      }
+
+      this.state.mapInfo.update(props);
+
+    }
+
+    resetHighlight(layer,weight,map){
+      layer.setStyle({
+        color: '#0067c8',
+        weight:weight,
+        pane:'blue'
+      });
+
+      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+          layer.bringToFront();
+      }
+      this.state.mapInfo.update();
+    }
+
+    zoomToFeature(layer,map){
+      map.fitBounds(layer.getBounds());
+    }
+
+
+    getWeight(mw){ // set the weight of the transmission line
+
+      return mw > 4000 ?  8 :
+      mw > 2000 ?  7 :
+      mw > 1000 ?  6 :
+      mw > 500  ?  5 :
+      mw > 100  ?  4 :
+      mw > 0    ?  3 :
+                   1 ;
+
+    }
+
+
     showMap(mapa){ ///draw the new transmission lines
       let a = this;
       let nodex = []
@@ -98,9 +169,32 @@ export default class TransmissionWrapper extends React.Component {
 
            let lz1 = row['lz1'].substring(0,2); //get the id of transmission line from row in file (first two digits)
            let lz2 = row['lz2'].substring(0,2);
+           let lz1Name = this.capitalize(row['lz1'].substring(3)); //get the id of transmission line's name from row in file
+           let lz2Name = this.capitalize(row['lz2'].substring(3));
+
            let weight = this.getWeight(row['existing_trans_cap_mw']); //call funct to get weight
            nodex = [coordinates[lz1],coordinates[lz2]];  //get the coordinates of the oadzones by id
-           b.push(L.polyline(nodex, {color: '#0067c8',weight:weight,pane:'blue'})); // draw a line from point A to point B
+
+           let info = {'from':lz1Name,'to':lz2Name,'capacity':row['existing_trans_cap_mw']}
+
+           let polyline = L.polyline(nodex, {color: '#0067c8',weight:weight,pane:'blue'
+           });
+
+           polyline.on('click', function(e) {
+               a.zoomToFeature(e.target,mapa);
+
+           });
+
+           polyline.on('mouseover', function(e) {
+               a.highlightFeature(e.target,info,mapa);
+           });
+
+           polyline.on('mouseout', function(e) {
+               a.resetHighlight(e.target,weight,mapa);
+           });
+
+
+           b.push(polyline); // draw a line from point A to point B
 
          });
 
@@ -118,19 +212,12 @@ export default class TransmissionWrapper extends React.Component {
              pane:'blue'
            }).addTo(mapa);
 
-
-
          }});
 
-
-
          b = L.layerGroup(b);
-
          a.setState({blueLines:b})
 
-
      });
-
 
    }
 
@@ -219,16 +306,22 @@ export default class TransmissionWrapper extends React.Component {
       pane: 'labels'
     });
 
-    this.showMap(mapa);
+
     let legend = this.setLegend();
+    let info = this.setInfo();
+    this.setState({mapInfo:info});
+
+    this.showMap(mapa);
 
     legend.addTo(mapa);
-
-
-
+    info.addTo(mapa);
 
 
   }
+
+
+
+
 
   render() {
 
