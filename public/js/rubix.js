@@ -1091,6 +1091,8 @@ Rubix.prototype._setupOrdinalAxis = function(forced) {
             var chart = this.charts[series];
             for(var i=0; i<rdata.length; i++) {
                 var x = rdata[i].x;
+                var label = Number(rdata[i].label); // tho show actual label
+                label = label.toFixed(2)
                 var y0 = 0;
                 if(this.stacked) {
                     if(rdata[i].hasOwnProperty('y0')) {
@@ -1128,7 +1130,8 @@ Rubix.prototype._setupOrdinalAxis = function(forced) {
                     others[x] = {};
                 }
                 others[x][series] = {
-                    y0: y0
+                    y0: y0,
+                    label:label,
                 };
             }
         }
@@ -1916,8 +1919,10 @@ Rubix.prototype.move_tooltip_x = function(dx, ys, points) {
 
 
 Rubix.prototype.move_tooltip_y = function(dy, yx, points) {
+
     try {
     var dx, mid;
+
     if(yx.length) {
         dx = d3.max(yx);
     }
@@ -1980,6 +1985,7 @@ Rubix.prototype.move_tooltip_y = function(dy, yx, points) {
     } else {
         formatterY = function(d) { return d; };
     }
+    let total = 0;
     for(var name in points) {
         var _x, _y;
         if(this.axis.y.type === 'datetime') {
@@ -2001,13 +2007,24 @@ Rubix.prototype.move_tooltip_y = function(dy, yx, points) {
             }
         }
 
-        _x = this.tooltipFormatter.abs.x ? Math.abs(_x) : _x;
+        _x = this.tooltipFormatter.abs.x ? Math.abs(_x) : _x; //fixme
         _y = this.tooltipFormatter.abs.y ? Math.abs(_y) : _y;
-        var series = "<div style='color: "+points[name].opts.color+"; margin-bottom: 2px'><b style='position:relative; top: -5px; left: -2px;'><span style='font-size: 22px;'>■ </span><span style='position:relative; top: -3px; left: -2px;'>"+name+"</span></b></div>";
-        var x = "<div style='font-size: 10px; margin-top: -10px;'>x : " + _x + " </div>";
-        var y = "<div style='font-size: 10px; margin-top: -5px;'>y : " + _y + " </div><br>";
-        html = (series+x+y) + html;
+        total += Number(points[name].label);
+        var label = "<div style='float: left; font-size: 11px; width:90%; margin-top:10px; '>" + points[name].label +" [MW]"+ " </div>";
+        var square = "<div style='float:left; color: "+points[name].opts.color+"; width:10%; '><b><span style='font-size: 22px;'>■</span></b><br></div>";
+
+        var wrapper = "<div style='width:100%; margin : 0;'>"+label+square+"<div style='clear: both;'></div></div>";
+
+
+        html = (wrapper) + html;
     }
+
+    total = Number(total);
+    total = total.toFixed(2);
+    label = "<div style='float: left; font-size: 11px; width:100%; margin-top:10px; '> Total : " + total +" [MW]"+ " </div>";
+    wrapper = "<div style='width:100%; margin : 0;'>"+label+"<div style='clear: both;'></div></div><br>";
+
+    html =  html + (wrapper);
 
     html = html.slice(0, html.length-4);
 
@@ -2043,6 +2060,7 @@ Rubix.prototype.overlayX = function(self, coordinates) {
         var points = {};
         var ok = [];
         for(var name in self.charts) {
+
             try {
                 if(y.hasOwnProperty(name)) {
                     if(self.axis.x.type === 'ordinal') {
@@ -2127,6 +2145,7 @@ Rubix.prototype.overlayY = function(self, coordinates) {
     var y0 = coordinates[1];
 
     try {
+
         var len = 0;
         if(self.axis.y.type === 'ordinal') {
             if(self.axis.y.range === 'column' || self.axis.y.range === 'bar') {
@@ -2141,22 +2160,28 @@ Rubix.prototype.overlayY = function(self, coordinates) {
             d1 = self.crosshair_data[i],
             d  = y0 - d0.x > d1.x - y0 ? d1 : d0;
 
+
         var y = d.y;
+
         var others = d.others;
         var xpos;
         var ys = [];
         var points = {};
         var ok = [];
+
         for(var name in self.charts) {
             try {
                 if(y.hasOwnProperty(name)) {
+
                     if(self.axis.y.type === 'ordinal') {
                         if(y[name] !== null && d.others[name].y0 !== null) {
                             ok.push(true);
                             var dx = d.x;
                             var dy = self.x(y[name]);
+
                             if(self.axis.y.range === 'column' || self.axis.y.range === 'bar') {
                                 if(self.grouped && self.charts[name].hasOwnProperty('count')) {
+
                                     dx = d.x + ((self.y.rangeBand()/(self.charts[name].layers.length)) * (self.charts[name].count)) + self.y.rangeBand()/(2*self.charts[name].layers.length);
                                 } else {
                                     dx += self.y.rangeBand()/2;
@@ -2165,13 +2190,19 @@ Rubix.prototype.overlayY = function(self, coordinates) {
 
                             self.charts[name].focus.attr('transform', 'translate(' + dy + ',' + dx +')').style('display', null);
                             xpos = dx;
+
+
                             ys.push(dy);
+
                             points[name] = {
                                 x: dy,
                                 y: dx,
+                                label: d.others[name].label,
                                 opts: self.charts[name].opts,
                                 invert: true
                             };
+
+
                         }
                     } else {
                         ok.push(true);
@@ -2183,6 +2214,7 @@ Rubix.prototype.overlayY = function(self, coordinates) {
                         points[name] = {
                             x: y[name],
                             y: d.x,
+                            label: dy,
                             opts: self.charts[name].opts,
                             invert: false
                         };
@@ -2564,8 +2596,10 @@ Rubix.prototype.column_series = function(opts) {
  */
 Rubix.prototype.bar_series = function(opts) {
     opts = opts || {};
+
     opts.name  = opts.name || this._generate_name();
     if(this.charts.hasOwnProperty(opts.name)) {
+
         throw new Error("Series exists: " + name);
     }
     if(this.opts.invertAxes !== true || this.opts.axis.x.range !== 'column') {
@@ -2574,10 +2608,15 @@ Rubix.prototype.bar_series = function(opts) {
         this.opts.axis.x.range = 'column';
         this.setup()
     }
+
+
     var column_series = new Rubix.ColumnSeries(this, opts);
+
+
+
     this.charts[column_series.name] = column_series;
     // this.legend.append("<div class='"+this.master_id+"-legend-labels' data-name='"+column_series.name+"' data-type='cstack' style='cursor: pointer; display: inline-block; font-weight: bold; margin-right: 10px; color: "+column_series.opts.color+"'><span style='font-size: 22px;'>■ </span><span style='font-size: 12px; position:relative; top: -3px; left: -2px;'>"+column_series.name+"</span></div>");
-    // this.resetLabelHandlers(); disable the labels at the bottom
+    // this.resetLabelHandlers();// disable the labels at the bottom
     return column_series;
 };
 
@@ -3347,10 +3386,12 @@ Rubix.PieDonut = function(id, type, opts) {
     this.elem = this.root_elem.find('.rubixccnium-chart');
 
     this.tooltip = this.root_elem.find('.rubixccnium-tooltip');
+
     this.tooltip.hide();
     this.tooltip.html("");
 
     opts.tooltip = opts.tooltip || {};
+
 
     this.tooltip.css({
         'font-family': 'Lato, "Lucida Grande", Arial, Helvetica, sans-serif',

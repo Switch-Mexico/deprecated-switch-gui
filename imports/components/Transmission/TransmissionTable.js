@@ -52,7 +52,7 @@ class DatatableComponent extends React.Component {
     let period = row['TRANS_BUILD_YEARS_2'];
 
     let mw = Number(row['BuildTrans']);
-    mw = mw.toFixed(2)
+    mw = mw.toFixed(2);
 
     return ([index+1,lz1,lz2,period,mw]);
 

@@ -375,7 +375,7 @@ export default class TransmissionWrapper extends React.Component {
                     <Panel>
                       <PanelHeader>
                         <div style={{padding: 25}}>
-                          <div ref="map" style={{height: 550}}>
+                          <div ref="map" style={{height: 750}}>
                           </div>
                           <div className='fg-black50 text-center' style={{borderBottom: '1px solid #ccc'}}>
                             <h5 style={{padding: 12.5, margin: 0}}>Scenario</h5>

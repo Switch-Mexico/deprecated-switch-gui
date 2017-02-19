@@ -7,13 +7,10 @@ import {
   Nav,
   Icon,
   Grid,
-  Form,
   Table,
   Label,
   Panel,
-  Button,
   NavItem,
-  Checkbox,
   Progress,
   MenuItem,
   PanelBody,
@@ -35,28 +32,72 @@ import {
   DropdownHoverButton,
 } from '@sketchpixy/rubix';
 
-
+import StackedHorizontalBar from '../components/StackedHorizontalBar'
 import HorizontalBarChart from '../components/HorizontalBarChart'
 import BarChart from '../components/BarChart'
 import ChartDescription from '../components/ChartDescription'
 import Dropzone from '../components/Dropzonejs'
 import BarColSeries from '../components/BarColSeries'
 
-import node0 from '../nodes/node_00';
-import node1 from '../nodes/node_01';
-import node2 from '../nodes/node_02';
-import node3 from '../nodes/node_03';
-import node4 from '../nodes/node_04';
-import node5 from '../nodes/node_05';
-import node6 from '../nodes/node_06';
-import node7 from '../nodes/node_07';
-import node8 from '../nodes/node_08';
-import node9 from '../nodes/node_09';
+import node00 from '../nodes/node_00';
+import node01 from '../nodes/node_01';
+import node02 from '../nodes/node_02';
+import node03 from '../nodes/node_03';
+import node04 from '../nodes/node_04';
+import node05 from '../nodes/node_05';
+import node06 from '../nodes/node_06';
+import node07 from '../nodes/node_07';
+import node08 from '../nodes/node_08';
+import node09 from '../nodes/node_09';
 
 
-const color = [ "#feb24c","#E34A33","#2B8CBE","#2CA25F","#C51B8A","#E6550D","#756BB1","#636363","#DD1C77","#1C9099"];
-const balancing_areas = ['01-central','02-oriental','03-occidental','04-noroeste','05-norte','06-noreste','07-peninsular','08-baja_california','09-baja_california_sur'];
-const balancing_area = ['Central','Oriental','Occidental','Noroeste','Norte','Noreste','Peninsular','Baja California','Baja California Sur'];
+const color = ["#1C9099", "#feb24c","#E34A33","#2B8CBE","#2CA25F","#C51B8A","#E6550D","#756BB1","#636363","#DD1C77","#1C9099"];
+const balancing_areas = ['08-baja_california','09-baja_california_sur','04-noroeste','05-norte','06-noreste','03-occidental','01-central','02-oriental','07-peninsular'];
+const balancing_area = ['Baja California','Baja California Sur','Noroeste','Norte','Noreste','Occidental','Central','Oriental','Peninsular'];
+
+const country = { "type" : "BalancingAreaCollection",
+                  "name" : "Mexico",
+                  "balancingAreas": [
+                    {
+                      "type" : "balancingArea",
+                      "properties" : {"ID":"08-baja_california", "name":"Baja California", "shape": node08, "color":"#756BB1"}
+                    },
+                    {
+                      "type" : "balancingArea",
+                      "properties" : {"ID":"09-baja_california_sur", "name":"Baja California Sur", "shape": node09, "color":"#DD1C77"}
+                    },
+                    {
+                      "type" : "balancingArea",
+                      "properties" : {"ID":"04-noroeste", "name":"Noroeste", "shape": node04, "color":"#636363"}
+                    },
+                    {
+                      "type" : "balancingArea",
+                      "properties" : {"ID":"05-norte", "name":"Norte", "shape": node05, "color":"#2CA25F"}
+                    },
+                    {
+                      "type" : "balancingArea",
+                      "properties" : {"ID":"06-noreste", "name":"Noreste", "shape": node06, "color":"#feb24c"}
+                    },
+                    {
+                      "type" : "balancingArea",
+                      "properties" : {"ID":"03-occidental", "name":"Occidental", "shape": node03, "color":"#1C9099"}
+                    },
+                    {
+                      "type" : "balancingArea",
+                      "properties" : {"ID":"01-central", "name":"Central", "shape": node01, "color":"#E34A33"}
+                    },
+                    {
+                      "type" : "balancingArea",
+                      "properties" : {"ID":"02-oriental", "name":"Oriental", "shape": node02, "color":"#C51B8A"}
+                    }
+                    ,
+                    {
+                      "type" : "balancingArea",
+                      "properties" : {"ID":"07-peninsular", "name":"Peninsular", "shape": node07, "color":"#2B8CBE"}
+                    }
+                  ]
+
+                };
 
 
 function capitalize(str) {
@@ -116,14 +157,62 @@ export default class Dashboard extends React.Component {
       });
 
 
-      var data = d3.nest()
-       .key(function(d) { return d.gen_tech;})
-       .rollup(function(d) {
-         return d3.sum(d, function(g) {return g.capacity_mw; });
-       }).entries(data);
+      data = data.filter(function(row) {
+        let gen_tech = row['gen_tech'];
+        if(gen_tech  == 'bioenergy_natural_gas'
+        || gen_tech  == 'bioenergy_diesel'
+        || gen_tech  == 'bioenergy_fuel_oil'){
+          row['gen_tech'] = 'bioenergy';
+        }
+        return row;
+      });
 
-       this.setState({
-          national : data
+
+
+      data = data.filter(function(row) {
+        let gen_tech = row['gen_tech'];
+
+        if( gen_tech == 'geothermal'
+        || gen_tech  == 'solar'
+        || gen_tech  == 'hydroelectric'
+        || gen_tech  == 'eolic'
+        || gen_tech  == 'termosolar'
+        || gen_tech  == 'solar'
+        || gen_tech  == 'bioenergy'){
+          return row;
+        }
+
+      });
+
+
+      data = data.filter(function(row) {
+        row['gen_tech'] = capitalize(row['gen_tech']);
+        return row;
+      });
+      var data = d3.nest()
+       .key(function(d) { return d.balancing_area;})
+       .entries(data);
+
+      let bal_areas = []
+
+      data.forEach(function(b_a,i){
+
+        let dato = d3.nest()
+        .key(function(d) { return d.gen_tech;})
+        .rollup(function(d) {
+          return d3.sum(d, function(g) {return g.capacity_mw; });
+        }).entries(b_a.values);
+
+
+
+        country.balancingAreas.forEach(function(bal_area,i){
+          if (bal_area.properties.ID == b_a.key) {bal_areas.push({"capacity":dato, "properties":bal_area.properties})};
+        });
+
+      });
+
+      this.setState({
+        national : bal_areas
        });
 
      });
@@ -132,7 +221,9 @@ export default class Dashboard extends React.Component {
   }
 
 
-  setLegend(color,balancing_areas){
+  setLegend(){
+
+
 
     let legend = L.control({position: 'bottomleft'});
 
@@ -140,9 +231,9 @@ export default class Dashboard extends React.Component {
 
       let div = L.DomUtil.create('div', 'info legend');
       // loop through our balancing_areas and generate a label with a colored square for each balancing_area
-      balancing_areas.forEach(function(b_a,i) {
+      country.balancingAreas.forEach(function(b_a,i) {
 
-        div.innerHTML += '<i style="background:' + color[i] + '"></i> ' + b_a + '<br>';
+        div.innerHTML += '<i style="background:' + b_a.properties.color + '"></i> ' + b_a.properties.name + '<br>';
       });
 
       return div;
@@ -189,7 +280,7 @@ export default class Dashboard extends React.Component {
   }
 
   handleClickNode(e){
-    console.log(e);
+
 
 
     d3.csv("/data/PowerPlants.csv", (error, data) => {
@@ -200,6 +291,25 @@ export default class Dashboard extends React.Component {
 
       data = data.filter(function(row) {
         return row['being_built'] != 'generic_project';
+
+
+      });
+
+      data = data.filter(function(row) {
+        let gen_tech = row['gen_tech'];
+
+        if( gen_tech == 'geothermal'
+        || gen_tech  == 'solar'
+        || gen_tech  == 'hydroelectric'
+        || gen_tech  == 'eolic'
+        || gen_tech  == 'termosolar'
+        || gen_tech  == 'solar'
+        || gen_tech  == 'bioenergy_natural_gas'
+        || gen_tech  == 'bioenergy_diesel'
+        || gen_tech  == 'bioenergy_fuel_oil'){
+          return row;
+        }
+
       });
 
       data = data.filter(function(row) {
@@ -237,23 +347,44 @@ export default class Dashboard extends React.Component {
 
   handleClick(balancing_area){
 
-    let names = balancing_area.split("-");
-    let id = names[0];
-    let name = names[1].replace("_", " ");
-    name = capitalize(name); // convert the first letter to upper case
-
     d3.csv("/data/PowerPlants.csv", (error, data) => {
 
       data = data.filter(function(row) {
+
+
         return row['being_built'] != 'optimization';
+
+
       });
 
       data = data.filter(function(row) {
         return row['being_built'] != 'generic_project';
+
       });
 
       data = data.filter(function(row) {
-        return row['balancing_area'] == balancing_area;
+        let gen_tech = row['gen_tech'];
+
+        if( gen_tech == 'geothermal'
+        || gen_tech  == 'solar'
+        || gen_tech  == 'hydroelectric'
+        || gen_tech  == 'eolic'
+        || gen_tech  == 'termosolar'
+        || gen_tech  == 'solar'
+        || gen_tech  == 'bioenergy_natural_gas'
+        || gen_tech  == 'bioenergy_diesel'
+        || gen_tech  == 'bioenergy_fuel_oil'){
+          return row;
+        }
+
+      });
+
+
+
+
+
+      data = data.filter(function(row) {
+        return row['balancing_area'] == balancing_area.properties.ID;
       });
 
       var data = d3.nest()
@@ -265,8 +396,8 @@ export default class Dashboard extends React.Component {
 
          this.setState({
            data : data,
-           balancing_area_name : name,
-           balancing_area_id   : id
+           balancing_area_name : balancing_area.properties.name,
+           balancing_area_id   : balancing_area.properties.ID
          });
 
      });
@@ -274,14 +405,13 @@ export default class Dashboard extends React.Component {
 
   componentDidMount(){
 
-
     var map = L.map(this.refs.mapi);
 
-    map.setView([23,-105], 13);
+    map.setView([23.8,-103.5], 5);
     var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
 
     map.createPane('labels');
-    map.getPane('labels').style.zIndex = 650;
+    map.getPane('labels').style.zIndex = 0;
 
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
       attribution: '©OpenStreetMap, ©CartoDB'
@@ -294,30 +424,28 @@ export default class Dashboard extends React.Component {
 
 
     let a = this;
-    let nodex = []
-    let nodes = [node0,node1,node2,node3,node4,node5,node6,node7,node8,node9]
-
+    let geojsonLayers = []
 
     let i = 0;
 
 
-
-
-    for (let n of nodes){
+    for (let b_a of country.balancingAreas){
     //functon to iterate over the gejson files and attach them a click funcion per feature (polygon, point .. shape)
 
-      nodex.push(
-        L.geoJson(n,{
-        fillColor:color[i],
+      geojsonLayers.push(
+        L.geoJson(b_a.properties.shape,{
+        fillColor:b_a.properties.color,
         weight: 2,
         opacity: 1,
         color: 'white',
         dashArray: '3',
         fillOpacity:.7,
+        b_a:b_a,
         onEachFeature:function (feature, layer) {
 
           layer.on('click', function(e) {
               let id = feature.properties.ID;
+
               a.zoomToFeature(layer,map);
               a.handleClickNode(id);
 
@@ -335,29 +463,26 @@ export default class Dashboard extends React.Component {
       i++;
     }
 
-
-    this.handleClick('01-central'); // execute these funtions in order to show some info when application starts
+    this.handleClick(country.balancingAreas[0]); // execute these funtions in order to show some info when application starts
     this.handleClickNode("31");
     this.nationalData();
-    let j = 0;
 
-    for (let n of nodex){
-      let b_a = balancing_areas[j];
-      let f = L.featureGroup([n]);
 
-      f.on('click', () => this.handleClick(b_a));
-      f.addTo(map);
-      j++;
+    geojsonLayers.forEach(function(layer,i){
 
-    }
+      let featureGroup = L.featureGroup([layer]);
+      featureGroup.on('click', () => a.handleClick(layer.b_a));
+      featureGroup.addTo(map);
+
+    });
 
     let mapInfo = this.setInfo();
-    let legend = this.setLegend(color,balancing_area);
+    let mapLegend = this.setLegend();
 
     this.setState({mapInfo:mapInfo})
 
     mapInfo.addTo(map);
-    legend.addTo(map);
+    mapLegend.addTo(map);
 
 
 
@@ -374,9 +499,9 @@ export default class Dashboard extends React.Component {
       return this._div;
     };
 
-    // method that we will use to update the control based on feature properties passed
+    // method that we will use to update the control based on the feature properties received
     info.update = function (props) {
-      this._div.innerHTML = '<h4>Mexico</h4>' +  (props ?
+      this._div.innerHTML = '<h4>Mexico\'s Balancing Areas</h4>' +  (props ?
         '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
         : 'Hover over a Load Zone');
       };
@@ -414,37 +539,27 @@ export default class Dashboard extends React.Component {
             <PanelContainer>
               <Panel>
                 <PanelHeader>
-                  <div style={{padding: 20, height: 400}}>
+                  <div style={{padding: 20, height: 300}}>
                     <div className='fg-black50 text-center'>
-                      <HorizontalBarChart color={'109'} container={"graph-container-0"} subtitle={"Capacity [ MW ]"} name={'Mexico'} data={this.state.national} id={'hbar-chart-0'} title={'National'}/>
-                    </div>
+                      <HorizontalBarChart height={220} color={this.state.balancing_area_id} title={'Load Zone'} container={"graph-container-1"} subtitle={"Capacity [ MW ]"} name={this.state.load_zone_name} data={this.state.nodexe} id={'hbar-chart'} />
+
+                  </div>
                   </div>
                 </PanelHeader>
               </Panel>
             </PanelContainer>
           </Col>
           <Col sm={5} collapseLeft>
-            <PanelContainer noOverflow>
+            <PanelContainer>
+            </PanelContainer>
+            <PanelContainer>
               <Panel>
                 <PanelBody style={{padding: 0}}>
                   <Grid>
                     <Row>
-                      <Col xs={12} className='text-center' style={{padding: 0}}>
-                        <Col xs={6} className='text-right'>
-                          <div className='fg-black text-center' style={{marginTop: 36}}>
-                            <h2> Installed Capacity</h2>
-                          </div>
-                        </Col>
-                        <Col xs={6} className='text-right' style={{padding: 10, height:60}}>
-                          <div>
-                            <DropdownButton outlined bsStyle='brightblue' title='Outlined' id='dropdown-outlined-dropup' pullRight>
-                              <MenuItem eventKey="1">Capacity [ MW ]</MenuItem>
-                              <MenuItem eventKey="2">Another action</MenuItem>
-                            </DropdownButton>
-                          </div>
-                          <br />
-                        </Col>
-                      </Col>
+                      <Col xs={12} className='text-center' style={{padding: 20, height: 500}}>
+                        <StackedHorizontalBar height={430} color={'109'} title={'National'} container={"graph-container-0"} subtitle={"Capacity [ MW ]"} name={'Mexico'} data={this.state.national} id={'hbar-chart-0'} />
+                    </Col>
                     </Row>
                   </Grid>
                 </PanelBody>
@@ -455,23 +570,9 @@ export default class Dashboard extends React.Component {
                 <PanelBody style={{padding: 0}}>
                   <Grid>
                     <Row>
-                      <Col xs={12} className='text-center' style={{padding: 20, height: 380}}>
-                        <HorizontalBarChart color={'109'} container={"graph-container-1"} subtitle={"Capacity [ MW ]"} name={this.state.load_zone_name} data={this.state.nodexe} id={'hbar-chart'} title={'Load Zone'}/>
-                      </Col>
-                    </Row>
-                  </Grid>
-                </PanelBody>
-              </Panel>
-            </PanelContainer>
-            <PanelContainer>
-              <Panel>
-                <PanelBody style={{padding: 0}}>
-                  <Grid>
-                    <Row>
-                      <Col xs={12} className='text-center' style={{padding: 20, height: 380 }}>
-                        <HorizontalBarChart color={this.state.balancing_area_id} container={"graph-container-2"} subtitle={"Capacity [ MW ]"} name={this.state.balancing_area_name} data={this.state.data} id={'hbar-chart2'} title={'Balancing Area'}/>
-
-                      </Col>
+                      <Col xs={12} className='text-center' style={{padding: 20, height: 400 }}>
+                        <HorizontalBarChart height={330} color={this.state.balancing_area_id} title={'Balancing Area'} container={"graph-container-2"} subtitle={"Capacity [ MW ]"} name={this.state.balancing_area_name} data={this.state.data} id={'hbar-chart2'} />
+                        </Col>
                     </Row>
                   </Grid>
                 </PanelBody>

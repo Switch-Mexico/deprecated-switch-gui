@@ -45,9 +45,7 @@ class ChartContainer extends React.Component {
   }
 }
 
-
-
-export default class HorizontalBarChart extends React.Component {
+export default class StackedHorizontalBar extends React.Component {
   constructor(props) {
     super(props);
 
@@ -61,17 +59,14 @@ export default class HorizontalBarChart extends React.Component {
 
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.name){
 
-    if (this.state.render[0].values != nextProps.data[0].values){
     (() => {
-
-      var colors = { '02': "#E34A33" , '03': "#2B8CBE", '04': "#2CA25F", '05': "#C51B8A", '06': "#E6550D", '07': "#756BB1",'08':"#636363", '09':"#DD1C77", '10': "#1C9099",'11':'#0067c8'};
-
 
       let label = '#'+nextProps.id;
       let container_label = '#'+nextProps.container;
       let long_label = '<div id="'+nextProps.id+'"></div>';
-      let color = nextProps.color.substr(0, 2);
+      // let color = nextProps.color.substr(0, 2);
 
 
       $(label).remove();
@@ -79,6 +74,7 @@ export default class HorizontalBarChart extends React.Component {
 
 
       if (nextProps.data){
+        console.log(nextProps.data,"nextProps")
 
 
         var chart = new Rubix(label, {
@@ -100,35 +96,37 @@ export default class HorizontalBarChart extends React.Component {
             },
             tooltip: {
               color: 'white',
-              width: '10px',
+              width: '8px',
               format: {
                 y: '.0f'
               }
             },
-            grouped: true,
+
             ticks:50,
             show_markers: false
           });
 
+          nextProps.data.forEach(function(b_a,i) {
 
-          let i = 0;
-          for (let d of nextProps.data){
-
+            console.log(b_a.properties,"b_a");
 
             let graph = chart.bar_series({
-
-              color: colors[color],
+              name: b_a.properties.name,
+              color: b_a.properties.color,
               strokewidth: '10'
             });
 
-            let value = d.values;
+            let values = []
 
+            for (let element of b_a.capacity){
 
+              values.push({x: element.key, y: element.values,label:element.values});
 
-            graph.addData([{x: d.key, y: value}]);
-            i++;
+            }
+            graph.addData(values);
 
-          }
+            });
+
 
       }
       })();
@@ -137,8 +135,8 @@ export default class HorizontalBarChart extends React.Component {
          render : nextProps.data
       });
 
-    }
 
+};
     }
 
   render() {
