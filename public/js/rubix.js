@@ -132,6 +132,7 @@ Rubix = function(id, opts) {
     this.column_stack_data_stack = [];
 
     this.root_elem = $(id);
+
     this.root_elem.css('position', 'relative');
     this.root_elem.addClass('rubixcc-main-chart');
     this.root_elem.append('<div class="rubixcc-tooltip"></div>');
@@ -1986,6 +1987,8 @@ Rubix.prototype.move_tooltip_y = function(dy, yx, points) {
         formatterY = function(d) { return d; };
     }
     let total = 0;
+    let cont = 0;
+
     for(var name in points) {
         var _x, _y;
         if(this.axis.y.type === 'datetime') {
@@ -2010,21 +2013,27 @@ Rubix.prototype.move_tooltip_y = function(dy, yx, points) {
         _x = this.tooltipFormatter.abs.x ? Math.abs(_x) : _x; //fixme
         _y = this.tooltipFormatter.abs.y ? Math.abs(_y) : _y;
         total += Number(points[name].label);
-        var label = "<div style='float: left; font-size: 11px; width:90%; margin-top:10px; '>" + points[name].label +" [MW]"+ " </div>";
+
+        var label = "<div style='float: left; font-size: 11px; width:90%; margin-top:10px; color: "+'#000000'+";'>" + points[name].label +" [MW]"+ " </div>";
         var square = "<div style='float:left; color: "+points[name].opts.color+"; width:10%; '><b><span style='font-size: 22px;'>■</span></b><br></div>";
 
         var wrapper = "<div style='width:100%; margin : 0;'>"+label+square+"<div style='clear: both;'></div></div>";
 
 
         html = (wrapper) + html;
+        cont += 1;
     }
+
+
 
     total = Number(total);
     total = total.toFixed(2);
-    label = "<div style='float: left; font-size: 11px; width:100%; margin-top:10px; '> Total : " + total +" [MW]"+ " </div>";
+    label = "<div style='float: left; font-size: 11px; width:100%; color: "+'#000000'+"; margin-top:10px;'><b>Total : " + total +" [MW]"+ " </b></div>";
     wrapper = "<div style='width:100%; margin : 0;'>"+label+"<div style='clear: both;'></div></div><br>";
 
-    html =  html + (wrapper);
+    if (cont > 1){
+        html =  html + (wrapper);
+    } else { html = wrapper;}
 
     html = html.slice(0, html.length-4);
 

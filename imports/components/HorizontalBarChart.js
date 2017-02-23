@@ -39,7 +39,7 @@ class ChartContainer extends React.Component {
   render() {
     return (
       <div>
-        <div id={this.props.container}  style={{height: "100%", width:"100%"}}><div id={this.props.id}></div></div>
+        <div id={this.props.container} style={{height: "100%", width:"100%"}}><div style={{height: "100%", width:"100%"}} id={this.props.id}></div></div>
       </div>
     );
   }
@@ -53,7 +53,7 @@ export default class HorizontalBarChart extends React.Component {
 
     this.state = {
 
-      render:[{values:0}]
+      name:""
 
     };
 
@@ -62,28 +62,19 @@ export default class HorizontalBarChart extends React.Component {
 
   componentWillReceiveProps(nextProps) {
 
-    if (this.state.render[0].values != nextProps.data[0].values){
-    (() => {
+    if (nextProps.data){
 
-      var colors = { '02': "#E34A33" , '03': "#2B8CBE", '04': "#2CA25F", '05': "#C51B8A", '06': "#E6550D", '07': "#756BB1",'08':"#636363", '09':"#DD1C77", '10': "#1C9099",'11':'#0067c8'};
-
-
+      var data  = nextProps.data.properties;
       let label = '#'+nextProps.id;
       let container_label = '#'+nextProps.container;
-      let long_label = '<div id="'+nextProps.id+'"></div>';
-      let color = nextProps.color.substr(0, 2);
-
+      let long_label = '<div style={{height: "100%", width:"100%"}} id="'+nextProps.id+'"></div>';
 
       $(label).remove();
       $(container_label).append(long_label);
 
-
-      if (nextProps.data){
-
-
         var chart = new Rubix(label, {
             height: nextProps.height,
-            title: nextProps.title + ":       "  +nextProps.name,
+            title: nextProps.title + ":       "  +data.name,
             titleColor: '#000000',
             subtitleColor: 'gray',
             subtitle:nextProps.subtitle,
@@ -112,39 +103,33 @@ export default class HorizontalBarChart extends React.Component {
 
 
           let i = 0;
-          for (let d of nextProps.data){
+
+          if (data.properties.capacity){
+
+            for (let d of data.capacity.break_down){
 
 
             let graph = chart.bar_series({
-
-              color: colors[color],
+              name: d.key,
+              color: nextProps.color,
               strokewidth: '10'
             });
 
-            let value = d.values;
 
-
-
-            graph.addData([{x: d.key, y: value}]);
+            graph.addData([{x: d.key, y: d.values,label:d.values}]);
             i++;
 
           }
 
+          this.setState({
+             name : data.name
+          });
+        }
       }
-      })();
-
-      this.setState({
-         render : nextProps.data
-      });
-
-    }
-
-    }
+  }
 
   render() {
-    if (!this.props.data){
-      return(<div>Loading...</div>);
-    }
+
     return (
       <div>
         <ChartContainer container={this.props.container} id={this.props.id}/>

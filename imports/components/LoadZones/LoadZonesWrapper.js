@@ -16,8 +16,8 @@ import {
 } from '@sketchpixy/rubix';
 
 
-import points from '../../nodes/Points/points';
-import coordinates from '../../nodes/Points/coordinates';
+import points from '../../data/Points/points';
+import coordinates from '../../data/Points/coordinates';
 
 import LoadZonesTable from './LoadZonesTable'
 import LoadZonesLabel from './LoadZonesLabel'
