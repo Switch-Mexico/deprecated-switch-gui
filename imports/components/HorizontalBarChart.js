@@ -1,35 +1,5 @@
 import React from 'react';
 
-import {
-  Row,
-  Tab,
-  Col,
-  Nav,
-  Icon,
-  Grid,
-  Form,
-  Table,
-  Label,
-  Panel,
-  Button,
-  NavItem,
-  Checkbox,
-  Progress,
-  PanelBody,
-  FormGroup,
-  PanelLeft,
-  isBrowser,
-  InputGroup,
-  LoremIpsum,
-  PanelRight,
-  PanelHeader,
-  FormControl,
-  PanelContainer,
-  PanelTabContainer
-} from '@sketchpixy/rubix';
-
-
-
 
 class ChartContainer extends React.Component {
   constructor(props) {
