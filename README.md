@@ -5,7 +5,7 @@
   <img src="https://github.com/Switch-Mexico/Switch-GUI/blob/master/public/imgs/screenshots/dashboard_05.png" alt="Screenshot 2" height="200px"/>
 </p>
 <p align="center">
-  <img src="https://github.com/Switch-Mexico/Switch-GUI/blob/master/public/imgs/screenshots/dashboard_02.png" alt="Screenshot 3" height="200px"/>
+  <img src="https://github.com/Switch-Mexico/Switch-GUI/blob/master/public/imgs/screenshots/dashboard_03.png" alt="Screenshot 3" height="200px"/>
   <img src="https://github.com/Switch-Mexico/Switch-GUI/blob/master/public/imgs/screenshots/dashboard_02.png" alt="Screenshot 4" height="200px"/>
 </p>
 ## Features
