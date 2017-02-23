@@ -60,7 +60,7 @@ export default class StackedHorizontalBar extends React.Component {
 
   componentWillReceiveProps(nextProps) {
 
-    if (this.state.render && nextProps.data["08"].properties.capacity){
+    if (this.state.render && nextProps.data["01"].properties.capacity){
 
     let label = '#'+nextProps.id;
     let container_label = '#'+nextProps.container;
@@ -104,8 +104,6 @@ export default class StackedHorizontalBar extends React.Component {
 
       for (let key in nextProps.data){
 
-        console.log(key);
-
         let graph = chart.bar_series({
           name: nextProps.data[key].properties.name,
           color: nextProps.data[key].properties.color,
@@ -113,8 +111,6 @@ export default class StackedHorizontalBar extends React.Component {
             });
 
             let values = []
-
-            console.log(nextProps.data[key].properties);
 
             var data = nextProps.data[key]["properties"]["capacity"]["break_down"];
 

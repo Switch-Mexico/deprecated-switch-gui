@@ -275,16 +275,19 @@ export default class Dashboard extends React.Component {
 
   handleClick(data){
 
-    if (data){
+    console.log(data,"handleClick");
 
+    if (data){
       let color = data.properties.color;
         this.setState({
           [data.type] : data,
           color : color
         });
+      } else { //FIXME temporal approach to skip loadZones w/o data
+          this.setState({
+            loadZone : 0,
+          });
       }
-
-
   }
 
   setInfo(props){
@@ -411,6 +414,7 @@ export default class Dashboard extends React.Component {
               <Panel>
                 <PanelHeader>
                   <Col xs={12} className='text-center' style={{padding: 20, height: 280 }}>
+                    <HorizontalBarChart title={'Load Zone'} color={this.state.color} height={210} container={"graph-container-1"} subtitle={"Installed Capacity [ MW ]"}  data={this.state.loadZone} id={'hbar-chart'} />
                   </Col>
                 </PanelHeader>
               </Panel>
@@ -423,7 +427,7 @@ export default class Dashboard extends React.Component {
                   <Grid>
                     <Row>
                       <Col xs={12} className='text-center' style={{padding: 20, height: 500}}>
-                        <StackedHorizontalBar title={'National'} height={430}  container={"graph-container-0"} subtitle={"Capacity [ MW ]"} name={'Mexico'} data={this.state.country.balancingAreas} id={'hbar-chart-0'} />
+                        <StackedHorizontalBar title={'National'} height={430}  container={"graph-container-0"} subtitle={"Installed Capacity [ MW ]"} name={'Mexico'} data={this.state.country.balancingAreas} id={'hbar-chart-0'} />
                       </Col>
                     </Row>
                   </Grid>
@@ -436,6 +440,7 @@ export default class Dashboard extends React.Component {
                   <Grid>
                     <Row>
                       <Col xs={12} className='text-center' style={{padding: 20, height: 400 }}>
+                        <HorizontalBarChart title={'Balancing Area'} color={this.state.color} height={330}  container={"graph-container-2"} subtitle={"Installed Capacity [ MW ]"}  data={this.state.balancingArea} id={'hbar-chart-2'} />
                       </Col>
                     </Row>
                   </Grid>

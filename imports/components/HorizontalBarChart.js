@@ -62,19 +62,22 @@ export default class HorizontalBarChart extends React.Component {
 
   componentWillReceiveProps(nextProps) {
 
-    if (nextProps.data){
+    console.log(nextProps)
 
-      var data  = nextProps.data.properties;
-      let label = '#'+nextProps.id;
-      let container_label = '#'+nextProps.container;
-      let long_label = '<div style={{height: "100%", width:"100%"}} id="'+nextProps.id+'"></div>';
+    var name  = nextProps.data ? nextProps.data.properties.name : "No Data"
 
-      $(label).remove();
-      $(container_label).append(long_label);
+
+
+        let label = '#'+nextProps.id;
+        let container_label = '#'+nextProps.container;
+        let long_label = '<div style={{height: "100%", width:"100%"}} id="'+nextProps.id+'"></div>';
+
+        $(label).remove();
+        $(container_label).append(long_label);
 
         var chart = new Rubix(label, {
             height: nextProps.height,
-            title: nextProps.title + ":       "  +data.name,
+            title: nextProps.title + ":       "  +name,
             titleColor: '#000000',
             subtitleColor: 'gray',
             subtitle:nextProps.subtitle,
@@ -104,7 +107,14 @@ export default class HorizontalBarChart extends React.Component {
 
           let i = 0;
 
-          if (data.properties.capacity){
+          if (nextProps.data){
+
+            if (nextProps.data.properties ){
+
+              let data = nextProps.data.properties ;
+
+
+          if (data.capacity){
 
             for (let d of data.capacity.break_down){
 
@@ -125,7 +135,7 @@ export default class HorizontalBarChart extends React.Component {
              name : data.name
           });
         }
-      }
+      }}
   }
 
   render() {
