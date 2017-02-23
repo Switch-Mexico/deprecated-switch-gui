@@ -45,7 +45,7 @@ import country from  '../data'
 
 
 function capitalize(str) {
-     var splittedEnter = str.split(" ");
+     var splittedEnter = str.split("_");
      var capitalized;
      var capitalizedResult;
      for (var i = 0 ; i < splittedEnter.length ; i++){
