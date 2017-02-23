@@ -275,8 +275,6 @@ export default class Dashboard extends React.Component {
 
   handleClick(data){
 
-    console.log(data,"handleClick");
-
     if (data){
       let color = data.properties.color;
         this.setState({
@@ -285,7 +283,7 @@ export default class Dashboard extends React.Component {
         });
       } else { //FIXME temporal approach to skip loadZones w/o data
           this.setState({
-            loadZone : 0,
+            loadZone : [],
           });
       }
   }

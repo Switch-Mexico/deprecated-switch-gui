@@ -62,61 +62,53 @@ export default class HorizontalBarChart extends React.Component {
 
   componentWillReceiveProps(nextProps) {
 
-    console.log(nextProps)
-
     var name  = nextProps.data ? nextProps.data.properties.name : "No Data"
+    let label = '#'+nextProps.id;
+    let container_label = '#'+nextProps.container;
+    let long_label = '<div style={{height: "100%", width:"100%"}} id="'+nextProps.id+'"></div>';
+
+    $(label).remove();
+    $(container_label).append(long_label);
+
+    var chart = new Rubix(label, {
+      height: nextProps.height,
+      title: nextProps.title + ":       "  +name,
+      titleColor: '#000000',
+      subtitleColor: 'gray',
+      subtitle:nextProps.subtitle,
+      axis: {
+        x: {
+          type: 'ordinal',
+          label: '[MW]',
+          labelColor: '#000000'
+        },
+        y:  {
+          type: 'linear',
+          tickFormat: 'd'
+        }
+      },
+      tooltip: {
+        color: 'white',
+        width: '10px',
+        format: {
+          y: '.0f'
+        }
+      },
+      grouped: true,
+      ticks:50,
+      show_markers: false
+    });
+
+    if (nextProps.data){
+
+      if (nextProps.data.properties ){
+
+        let data = nextProps.data.properties ;
 
 
+        if (data.capacity){
 
-        let label = '#'+nextProps.id;
-        let container_label = '#'+nextProps.container;
-        let long_label = '<div style={{height: "100%", width:"100%"}} id="'+nextProps.id+'"></div>';
-
-        $(label).remove();
-        $(container_label).append(long_label);
-
-        var chart = new Rubix(label, {
-            height: nextProps.height,
-            title: nextProps.title + ":       "  +name,
-            titleColor: '#000000',
-            subtitleColor: 'gray',
-            subtitle:nextProps.subtitle,
-            axis: {
-              x: {
-                type: 'ordinal',
-                label: '[MW]',
-                labelColor: '#000000'
-              },
-              y:  {
-                type: 'linear',
-                tickFormat: 'd'
-              }
-            },
-            tooltip: {
-              color: 'white',
-              width: '10px',
-              format: {
-                y: '.0f'
-              }
-            },
-            grouped: true,
-            ticks:50,
-            show_markers: false
-          });
-
-
-          let i = 0;
-
-          if (nextProps.data){
-
-            if (nextProps.data.properties ){
-
-              let data = nextProps.data.properties ;
-
-
-          if (data.capacity){
-
-            for (let d of data.capacity.break_down){
+          for (let d of data.capacity.break_down){
 
 
             let graph = chart.bar_series({
@@ -127,7 +119,6 @@ export default class HorizontalBarChart extends React.Component {
 
 
             graph.addData([{x: d.key, y: d.values,label:d.values}]);
-            i++;
 
           }
 
