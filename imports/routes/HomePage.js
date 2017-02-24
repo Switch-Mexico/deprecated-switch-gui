@@ -76,7 +76,7 @@ export default class Homepage extends React.Component {
               <nav>
                 <Col xs={6} sm={5} md={4} >
                 </Col>
-                <Col xs={6} sm={3} md={2} xmOffset={0} smOffset={4} mdOffset={5} >
+                <Col xs={6} sm={3} md={2} smOffset={4} mdOffset={5} >
                   <div className='container_button_demo'>
                     <button className="button_demo" onClick={::this.handleNavigation}>Click here to View Demo</button>
                   </div>
@@ -112,16 +112,22 @@ export default class Homepage extends React.Component {
         <section>
           <Grid>
             <Col md={12} >
+              <Col md={2}></Col>
+            <Col md={8} >
               <div className="container_secodary">
                 <div className="logo_berkeley_rael">
-                  <Col xs={12} sm={4} md={4} className='logo_berkeley'>
+                  <Col xs={12} sm={4} md={3} className='logo_hawaii'>
+                    <img src='/imgs/app/university_hawaii.jpg'/>
+                  </Col>
+                  <Col xs={12} sm={4} md={3} className='logo_berkeley'>
                     <img src='/imgs/app/berkeley.jpg'/>
                   </Col>
-                  <Col xs={12} sm={8} md={8} className='logo_rael'>
+                  <Col xs={12} sm={4} md={6} className='logo_rael'>
                     <img src='/imgs/app/rael.png'/>
                   </Col>
                 </div>
               </div>
+            </Col>
             </Col>
           </Grid>
         </section>

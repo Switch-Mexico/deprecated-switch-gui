@@ -19,7 +19,7 @@ nav{
 .container_initial{
     position: relative;
     width: 100%;
-    height: 475px;
+    height: 575px;
     background-color: rgb(0,103,200);
 }
 
@@ -74,9 +74,10 @@ font-size: 18px;
 .container_secodary{
   position: relative;
   top:-50px;
-  width: 75%;
+  width: 90%;
   background-color: white;
   margin: 0 auto;
+
 }
 
 .logo{
@@ -95,13 +96,25 @@ font-size: 18px;
   padding-right: 55px;
   box-shadow: rgba(0, 0, 0, 0.74902) 1px 4px 18px -1px;
 }
-.logo_rael img, .logo_berkeley img{
+.logo_rael img{
   width: 100%;
   height: 50px;
 }
+
+
+.logo_berkeley img{
+  width: 95%;
+  height: 50px;
+}
+
+.logo_hawaii img{
+  width: 90%;
+  height: 50px;
+}
+
 .container_columns{
   position: relative;
-  width: 73%;
+  width: 65%;
   height: 300px;
   margin: 0 auto;
   padding-bottom: 2em;
