@@ -226,6 +226,8 @@ export default class Dashboard extends React.Component {
     return legend;
   }
 
+
+
   highlightFeature(layer,l_z,map,b_a){
 
     let name  = this.state.country.loadZones[l_z.ID] ? this.state.country.loadZones[l_z.ID].properties.name : "No Data";
@@ -334,58 +336,65 @@ export default class Dashboard extends React.Component {
 
 
     let a = this;  //inside gejson's functions (onEachFeature) the aplication context change so we declare the context (this) to variable "a" so ww will be able to use the application context inside those functions
-    let geojsonLayers = []
+
 
     map.createPane('shapes');
     map.getPane('shapes').style.zIndex = 350;
 
-    for (let key in country.balancingAreas){
-    //functon to iterate over the gejson files and attach them a click funcion per feature (polygon, point .. shape)
+    let shape_layers = {};
 
-      geojsonLayers.push(
-        L.geoJson(this.state.country.balancingAreas[key].properties.shape,{
-        fillColor:this.state.country.balancingAreas[key].properties.color,
-        weight: 2,
-        opacity: 1,
-        color: 'white',
-        dashArray: '3',
-        fillOpacity:.7,
-        b_a:this.state.country.balancingAreas[key],
-        pane:'shapes',
-        onEachFeature:function (feature, layer) {
+    for (let shape_name in country.balancingAreas["01"].properties.shape){
+      //iterates over the shapes that a country has (in our case the ones provided by prodesen and the ones generated with Mateo's work)
 
-          layer.on('click', function(e) {
-              let id = feature.properties.ID;
-              a.zoomToFeature(layer,map);
-              a.handleClick(a.state.country.loadZones[id]);
+      let geojsonLayers = [];
 
-          });
+      for (let key in country.balancingAreas){
+        //functon to iterate over the gejson files and attach them a click funcion per feature (polygon, point .. sh/ape)
+        geojsonLayers.push(
+          L.geoJson(this.state.country.balancingAreas[key].properties.shape[shape_name],{
+            fillColor:this.state.country.balancingAreas[key].properties.color,
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity:.7,
+            b_a:this.state.country.balancingAreas[key],
+            pane:'shapes',
+            onEachFeature:function (feature, layer) {
 
-          layer.on('mouseover', function(e) {
-              a.highlightFeature(layer,layer.feature.properties,map,a.state.country.balancingAreas[key]);
-          });
+              layer.on('click', function(e) {
+                let id = feature.properties.ID;
+                a.zoomToFeature(layer,map);
+                a.handleClick(a.state.country.loadZones[id]);
 
-          layer.on('mouseout', function(e) {
-              a.resetHighlight(layer,map);
-          });
+              });
 
-        }}));
+              layer.on('mouseover', function(e) {
+                a.highlightFeature(layer,layer.feature.properties,map,a.state.country.balancingAreas[key]);
+              });
 
-    }
-    geojsonLayers.forEach(function(layer,i){
-      let featureGroup = L.featureGroup([layer]);
-      featureGroup.on('click', () => a.handleClick(layer.options.b_a));
-      featureGroup.addTo(map);
+              layer.on('mouseout', function(e) {
+                a.resetHighlight(layer,map);
+              });
 
-    });
+            }}));
+
+            geojsonLayers.forEach(function(layer,i){
+              let featureGroup = L.featureGroup([layer]);
+              featureGroup.on('click', () => a.handleClick(layer.options.b_a));
+            });
+          }
+
+          shape_layers[shape_name] = L.layerGroup(geojsonLayers);
+        }
 
     let mapInfo = this.setInfo();
     let mapLegend = this.setLegend();
-
     this.setState({mapInfo:mapInfo})
 
     mapInfo.addTo(map);
     mapLegend.addTo(map);
+    L.control.layers(shape_layers).addTo(map);
 
     this.handleClick(this.state.balancingArea); // execute these funtions in order to show some info when the application starts
     this.handleClick(this.state.loadZone);
