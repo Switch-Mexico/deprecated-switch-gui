@@ -1,5 +1,5 @@
 
-//importing of GeoJSON files, there is no need to write out the file extension in here, though it is extremly importat to change the actual file extensions from ".geojson" to ".json"
+//importing GeoJSON files, there is no need to write out the file extension in here, though it is extremly importat to change the actual file extensions from ".geojson" to ".json"
 
 import p_b_a_00 from '../data/balancing_areas/prodesen/b_a_00';
 import p_b_a_01 from '../data/balancing_areas/prodesen/b_a_01';
