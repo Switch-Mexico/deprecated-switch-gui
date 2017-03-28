@@ -23,7 +23,7 @@ import s_b_a_07 from '../data/balancing_areas/switch/b_a_07';
 import s_b_a_08 from '../data/balancing_areas/switch/b_a_08';
 import s_b_a_09 from '../data/balancing_areas/switch/b_a_09';
 
-//Schema of a country. In this case Mexico has 54 load zones clustered in 9 balancing areas.
+//Schema of a country. In this case Mexico has 54 load zones clustered in 9 balancing areas. Also we have two types of shapes (1.-provided by PRODESEN and 2.- builded by SWITCH team)
 
 const country = {
 
@@ -39,7 +39,7 @@ const country = {
                                                       "Prodesen": p_b_a_08,
                                                       "Switch" : s_b_a_08
                                       } ,
-                                      "color":"#756BB1"
+                                      "color":"#E34A33"
                       }
                     },
                     "09" :{
@@ -75,7 +75,7 @@ const country = {
                                                       "Prodesen": p_b_a_05,
                                                       "Switch" : s_b_a_05
                                       },
-                                      "color":"#E34A33"
+                                      "color":"#756BB1"
                       }
                     },
                     "06" :{
@@ -137,7 +137,9 @@ const country = {
                                       "color":"#C51B8A"
                       }
                     }
-                }
+                 },
+
+                "loadZones":{}
 
                 };
 

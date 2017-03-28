@@ -15,12 +15,45 @@ import {
 
 } from '@sketchpixy/rubix';
 
-
-import points from '../../data/Points/points';
 import coordinates from '../../data/Points/coordinates';
 
 import TransmissionTable from './TransmissionTable'
 import TransmissionLabel from './TransmissionLabel'
+
+import country from  '../../data'
+
+// --------------------------------------------------------------------functions / top level declarations
+
+function capitalize(str) {
+     var splittedEnter = str.split(" ");
+     var capitalized;
+     var capitalizedResult;
+     for (var i = 0 ; i < splittedEnter.length ; i++){
+         capitalized = splittedEnter[i].charAt(0).toUpperCase();
+         splittedEnter[i] = capitalized + splittedEnter[i].substr(1).toLowerCase();
+    }
+    return splittedEnter.join(" ");
+}
+
+function getWeight(mw){ // set the weight of the transmission line
+
+  return mw > 4000 ?  8 :
+  mw > 2000 ?  7 :
+  mw > 1000 ?  6 :
+  mw > 500  ?  5 :
+  mw > 100  ?  4 :
+  mw > 0    ?  3 :
+               1 ;
+
+}
+
+function leftZero(n) {
+  var s = String(n);
+  while (s.length <  2) {s = "0" + s;}
+  return s;
+}
+
+//-------------------------------------------------------------------react class
 
 export default class TransmissionWrapper extends React.Component {
 
@@ -28,34 +61,24 @@ export default class TransmissionWrapper extends React.Component {
 
     super(props);
     this.showNewPoints = this.showNewPoints.bind(this); // declare all the functions that will be available
-    this.getPeriod = this.getPeriod.bind(this);
     this.showMap = this.showMap.bind(this);
     this.setLegend = this.setLegend.bind(this);
-    this.getWeight = this.getWeight.bind(this);
 
-    this.state = { /// declare initial state
+    this.state = { // declare initial state
 
       data:0,
       blueLines:0,
       redLines:{},
       nodexe:0,
       maps:0,
+      country:country,
       period:0,
-      mapInfo:0
+      mapInfo:0,
 
     };
   }
 
-  capitalize(str) {
-       var splittedEnter = str.split(" ");
-       var capitalized;
-       var capitalizedResult;
-       for (var i = 0 ; i < splittedEnter.length ; i++){
-           capitalized = splittedEnter[i].charAt(0).toUpperCase();
-           splittedEnter[i] = capitalized + splittedEnter[i].substr(1).toLowerCase();
-      }
-      return splittedEnter.join(" ");
-  }
+
 
   setInfo(){
 
@@ -69,7 +92,7 @@ export default class TransmissionWrapper extends React.Component {
 
     // method that we will use to update the control based on feature properties passed
     info.update = function (props) {
-      this._div.innerHTML = '<h4>Mexico\'s Transmission Lines</h4>' +  (props ?
+      this._div.innerHTML = '<h4>Mexico\'s Load Zones</h4>' +  (props ?
         '<b> From '  + props.from +' to ' + props.to+ '</b><br />' +'Capacity: ' + props.capacity + '  [MW]'
         : 'Hover over a Transmission Line');
       };
@@ -138,19 +161,6 @@ export default class TransmissionWrapper extends React.Component {
     }
 
 
-    getWeight(mw){ // set the weight of the transmission line
-
-      return mw > 4000 ?  8 :
-      mw > 2000 ?  7 :
-      mw > 1000 ?  6 :
-      mw > 500  ?  5 :
-      mw > 100  ?  4 :
-      mw > 0    ?  3 :
-                   1 ;
-
-    }
-
-
     showMap(mapa){ ///draw the new transmission lines
       let a = this;
       let nodex = []
@@ -169,11 +179,11 @@ export default class TransmissionWrapper extends React.Component {
 
            let lz1 = row['lz1'].substring(0,2); //get the id of transmission line from row in file (first two digits)
            let lz2 = row['lz2'].substring(0,2);
-           let lz1Name = this.capitalize(row['lz1'].substring(3)); //get the id of transmission line's name from row in file
-           let lz2Name = this.capitalize(row['lz2'].substring(3));
+           let lz1Name = capitalize(row['lz1'].substring(3)); //get the id of transmission line's name from row in file
+           let lz2Name = capitalize(row['lz2'].substring(3));
 
-           let weight = this.getWeight(row['existing_trans_cap_mw']); //call funct to get weight
-           nodex = [coordinates[lz1],coordinates[lz2]];  //get the coordinates of the oadzones by id
+           let weight = getWeight(row['existing_trans_cap_mw']); //call funct to get weight
+           nodex = [this.state.country.loadZones[lz1],this.state.country.loadZones[lz2]];  //get the coordinates of the oadzones by id
 
            let info = {'from':lz1Name,'to':lz2Name,'capacity':row['existing_trans_cap_mw']}
 
@@ -198,22 +208,6 @@ export default class TransmissionWrapper extends React.Component {
 
          });
 
-         L.geoJson(points,{ // draw all the points from file imports> nodes > Points > points.json
-
-         onEachFeature:function (feature, layer) { // iterate over all the features from points.json files
-           let latlng = feature.geometry.coordinates;
-
-          L.circle([latlng[1],latlng[0]], {
-             color: '#0067c8', //set the points color opacity and radius
-             fillColor: '#0067c8',
-             fillOpacity: .3,
-             opacity:.3,
-             radius: 25000,
-             pane:'blue'
-           }).addTo(mapa);
-
-         }});
-
          b = L.layerGroup(b);
          a.setState({blueLines:b})
 
@@ -222,8 +216,50 @@ export default class TransmissionWrapper extends React.Component {
    }
 
 
+   drawPoints(mapa){
 
-  getPeriod(data){ // get all the years and legacy periods from droped  file
+     var a = this;
+     var coordinates_list = {};
+
+     let country = this.state.country;
+
+       let geojsonLayers = [];
+
+       for (let key in country.balancingAreas){
+         //functon to iterate over the gejson files and attach them a click funcion per feature (polygon, point .. sh/ape)
+           L.geoJson(country.balancingAreas[key].properties.shape["Prodesen"],{
+             onEachFeature:function (feature, layer) {
+
+               let id = leftZero(feature.properties.ID);
+               let coordinates = layer.getBounds().getCenter();
+               coordinates_list[id] = coordinates;
+
+
+               L.circle([coordinates["lat"],coordinates["lng"]], {
+                 color: '#0067c8', //set the points color opacity and radius
+                 fillColor: '#0067c8',
+                 fillOpacity: .3,
+                 opacity:.3,
+                 radius: 25000,
+                 pane:'blue'
+               }).addTo(mapa);
+
+             }});
+           }
+
+      country.loadZones = coordinates_list;
+
+      this.setState({
+        country : country
+      });
+
+      console.log(this.state.country);
+
+   }
+
+
+
+  getYears(data){ // get all the years and legacy periods from droped  file
 
     var m = d3.map(data, function(d) { return d['TRANS_BUILD_YEARS_2']; });
     var years = m.keys();
@@ -251,8 +287,8 @@ export default class TransmissionWrapper extends React.Component {
           let lzs = row['TRANS_BUILD_YEARS_1'].split("-"); //get the names of the transmission lines
           let lz1 = lzs[0]; // set transmission line one and two
           let lz2 = lzs[2];
-          let weight = a.getWeight(row['BuildTrans']); //get the underlying weight
-          nodex = [coordinates[lz1],coordinates[lz2]]; //set corrdinates obteined from coordinates.json file
+          let weight = getWeight(row['BuildTrans']); //get the underlying weight
+          nodex = [a.state.country.loadZones[lz1],a.state.country.loadZones[lz2]]; //set corrdinates obteined from coordinates.json file
           let polyline = L.polyline(nodex, {color: '#ff4949',weight:weight,pane:'red'}); //draw the poyline
           lines.push(polyline);
 
@@ -294,6 +330,8 @@ export default class TransmissionWrapper extends React.Component {
 
     mapa.createPane('description');
     mapa.getPane('description').style.zIndex = 750;
+
+    this.drawPoints(mapa);
 
 
 
@@ -337,12 +375,13 @@ export default class TransmissionWrapper extends React.Component {
         return row != undefined;
     });
 
-    let period = this.getPeriod(data);
+    let period = this.getYears(data);
 
     if(this.state.blueLines != 0)
     {
-      console.log(this.state.blueLines,"----------------------------------")
-      this.showNewPoints(this.state.maps,data,period,this.state.blueLines);}
+
+      this.showNewPoints(this.state.maps,data,period,this.state.blueLines);
+    }
 
 
     return (

@@ -12,6 +12,8 @@ import Footer from './common/footer';
 /* Pages */
 import Home from './routes/Home';
 
+import Example from './routes/Example';
+
 import CloseUp from './routes/CloseUp';
 import Transmission from './routes/Transmission';
 import LoadBalance from './routes/LoadBalance';
@@ -74,7 +76,7 @@ const routes = (
     <Route path='/outputs/Transmission' component={Transmission} />
     <Route path='/outputs/BuildProject' component={BuildProject} />
     <Route path='/outputs/LoadBalance' component={LoadBalance} />
-
+    <Route path='/example' component={Example} />
     <Route path='/inputs/load-zones' component={LoadZones} />
   </Route>
 );
